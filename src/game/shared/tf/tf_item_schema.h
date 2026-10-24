@@ -290,6 +290,7 @@ private:
 	void RemapSniperExtraSlots( void );
 	void RemapMedicCrossbowSlot( void );
 	void ShareShotgunWithShotgunClasses( void );
+	void ShareScoutPistolsWithEngineer( void );
 
 	// The load-out slot that this item can be placed into.
 	int				m_iDefaultLoadoutSlot;

@@ -12985,7 +12985,29 @@ int	CTFPlayer::GetMaxAmmo( int iAmmoIndex, int iClassIndex /*= -1*/ )
 	}
 	else if ( iAmmoIndex == TF_AMMO_SECONDARY )
 	{
+		const int iClassBase = iMax;
 		CALL_ATTRIB_HOOK_INT( iMax, mult_maxammo_secondary );
+
+		// Scout pistol unlocks must not shrink the engineer's stock pistol reserve.
+		const bool bEngineer = ( iClassIndex == TF_CLASS_ENGINEER )
+			|| ( iClassIndex == -1 && IsPlayerClass( TF_CLASS_ENGINEER ) );
+		if ( bEngineer && iMax < iClassBase )
+		{
+			for ( int i = 0; i < WeaponCount(); ++i )
+			{
+				CBaseCombatWeapon *pWeapon = GetWeapon( i );
+				if ( !pWeapon || !pWeapon->GetAttributeContainer() )
+					continue;
+
+				CEconItemView *pItem = pWeapon->GetAttributeContainer()->GetItem();
+				const CEconItemDefinition *pDef = pItem ? pItem->GetStaticData() : NULL;
+				if ( pDef && pDef->GetItemClass() && !V_stricmp( pDef->GetItemClass(), "tf_weapon_handgun_scout_secondary" ) )
+				{
+					iMax = iClassBase;
+					break;
+				}
+			}
+		}
 	}
 	else if ( iAmmoIndex == TF_AMMO_METAL )
 	{

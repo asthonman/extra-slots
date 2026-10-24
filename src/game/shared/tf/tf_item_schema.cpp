@@ -1087,6 +1087,7 @@ bool CTFItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString> 
 	RemapSniperExtraSlots();
 	RemapMedicCrossbowSlot();
 	ShareShotgunWithShotgunClasses();
+	ShareScoutPistolsWithEngineer();
 
 #ifdef CLIENT_DLL
 	m_bHasDetailedIcon = pKVInitValues->GetBool( "has_detailed_icon" );
@@ -1136,6 +1137,7 @@ bool CTFItemDefinition::BInitFromTestItemKVs( int iNewDefIndex, KeyValues *pKVIt
 	RemapSniperExtraSlots();
 	RemapMedicCrossbowSlot();
 	ShareShotgunWithShotgunClasses();
+	ShareScoutPistolsWithEngineer();
 
 	KeyValues *pTauntKV = pKVItem->FindKey( "taunt" );
 	if ( pTauntKV )
@@ -1793,6 +1795,39 @@ void CTFItemDefinition::ShareShotgunWithShotgunClasses( void )
 			pClasses->SetString( pszClassName, ( iClass == TF_CLASS_ENGINEER ) ? "primary" : "secondary" );
 		}
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Winger and Pretty Boy's Pocket Pistol can be equipped by the Engineer.
+//			Shortstop stays a Scout primary. Reserve ammo is the engineer's pistol pool.
+//-----------------------------------------------------------------------------
+void CTFItemDefinition::ShareScoutPistolsWithEngineer( void )
+{
+	const char *pszItemClass = GetItemClass();
+	if ( !pszItemClass || V_stricmp( pszItemClass, "tf_weapon_handgun_scout_secondary" ) )
+		return;
+
+	if ( m_vbClassUsability.IsBitSet( TF_CLASS_ENGINEER ) )
+		return;
+
+	m_vbClassUsability.Set( TF_CLASS_ENGINEER );
+	m_iLoadoutSlots[TF_CLASS_ENGINEER] = LOADOUT_POSITION_SECONDARY;
+
+	const char *pszClassName = GetItemSchema()->GetClassUsabilityStrings()[TF_CLASS_ENGINEER];
+	m_vecTags.AddToTail( GetItemSchema()->GetHandleForTag( CFmtStr( "auto__class_%s", pszClassName ).Get() ) );
+
+	KeyValues *pKV = GetRawDefinition();
+	KeyValues *pClasses = pKV ? pKV->FindKey( "used_by_classes", true ) : NULL;
+	if ( !pClasses || !pszClassName )
+		return;
+
+	for ( KeyValues *pKVClass = pClasses->GetFirstSubKey(); pKVClass; pKVClass = pKVClass->GetNextKey() )
+	{
+		if ( !V_stricmp( pKVClass->GetName(), pszClassName ) )
+			return;
+	}
+
+	pClasses->SetString( pszClassName, "secondary" );
 }
 
 //-----------------------------------------------------------------------------
