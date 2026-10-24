@@ -19395,6 +19395,7 @@ void CTFPlayer::ModifyOrAppendCriteria( AI_CriteriaSet& criteriaSet )
 			"loadout_slot_sniper_bow",		// LOADOUT_POSITION_SNIPER_BOW
 			"loadout_slot_sniper_jar",		// LOADOUT_POSITION_SNIPER_JAR
 			"loadout_slot_sniper_backpack",	// LOADOUT_POSITION_SNIPER_BACKPACK
+			"loadout_slot_medic_crossbow",	// LOADOUT_POSITION_MEDIC_CROSSBOW
 		};
 		COMPILE_TIME_ASSERT( ARRAYSIZE(kSlotCriteriaName) == CLASS_LOADOUT_POSITION_COUNT );
 		CEconItemView *pItem = NULL;

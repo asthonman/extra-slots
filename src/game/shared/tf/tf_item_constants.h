@@ -106,6 +106,9 @@ enum loadout_positions_t
 	LOADOUT_POSITION_SNIPER_JAR,
 	LOADOUT_POSITION_SNIPER_BACKPACK,
 
+	// Medic key 4. Crusader's Crossbow and its reskin. Syringe gun stays on key 1.
+	LOADOUT_POSITION_MEDIC_CROSSBOW,
+
 	CLASS_LOADOUT_POSITION_COUNT,
 };
 
@@ -192,7 +195,8 @@ inline bool IsExtraClassWeaponSlot( int iSlot )
 		|| iSlot == LOADOUT_POSITION_ENGINEER_TOOL
 		|| iSlot == LOADOUT_POSITION_SNIPER_BOW
 		|| iSlot == LOADOUT_POSITION_SNIPER_JAR
-		|| iSlot == LOADOUT_POSITION_SNIPER_BACKPACK;
+		|| iSlot == LOADOUT_POSITION_SNIPER_BACKPACK
+		|| iSlot == LOADOUT_POSITION_MEDIC_CROSSBOW;
 }
 
 inline bool IsValidPickupWeaponSlot( int iSlot )
@@ -213,7 +217,8 @@ inline bool IsValidPickupWeaponSlot( int iSlot )
 		|| iSlot == LOADOUT_POSITION_ENGINEER_TOOL
 		|| iSlot == LOADOUT_POSITION_SNIPER_BOW
 		|| iSlot == LOADOUT_POSITION_SNIPER_JAR
-		|| iSlot == LOADOUT_POSITION_SNIPER_BACKPACK;
+		|| iSlot == LOADOUT_POSITION_SNIPER_BACKPACK
+		|| iSlot == LOADOUT_POSITION_MEDIC_CROSSBOW;
 }
 
 

@@ -177,6 +177,7 @@ public:
 
 	virtual bool	Holster( CBaseCombatWeapon *pSwitchingTo ) OVERRIDE;
 	virtual int		GetWeaponID( void ) const			{ return TF_WEAPON_CROSSBOW; }
+	virtual int		GetSlot( void ) const OVERRIDE		{ return 3; }	// key 4. Syringe gun stays on key 1.
 	virtual void	SecondaryAttack( void );
 	virtual float	GetProjectileSpeed( void );
 	virtual float	GetProjectileGravity( void );

@@ -288,6 +288,7 @@ private:
 	void RemapHeavyLunchboxSlot( void );
 	void RemapEngineerToolSlot( void );
 	void RemapSniperExtraSlots( void );
+	void RemapMedicCrossbowSlot( void );
 
 	// The load-out slot that this item can be placed into.
 	int				m_iDefaultLoadoutSlot;

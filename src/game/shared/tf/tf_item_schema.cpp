@@ -1085,6 +1085,7 @@ bool CTFItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString> 
 	RemapHeavyLunchboxSlot();
 	RemapEngineerToolSlot();
 	RemapSniperExtraSlots();
+	RemapMedicCrossbowSlot();
 
 #ifdef CLIENT_DLL
 	m_bHasDetailedIcon = pKVInitValues->GetBool( "has_detailed_icon" );
@@ -1132,6 +1133,7 @@ bool CTFItemDefinition::BInitFromTestItemKVs( int iNewDefIndex, KeyValues *pKVIt
 	RemapHeavyLunchboxSlot();
 	RemapEngineerToolSlot();
 	RemapSniperExtraSlots();
+	RemapMedicCrossbowSlot();
 
 	KeyValues *pTauntKV = pKVItem->FindKey( "taunt" );
 	if ( pTauntKV )
@@ -1693,6 +1695,46 @@ void CTFItemDefinition::RemapSniperExtraSlots( void )
 }
 
 //-----------------------------------------------------------------------------
+// Purpose: Crusader's Crossbow leaves primary for key 4. The syringe gun stays.
+//-----------------------------------------------------------------------------
+void CTFItemDefinition::RemapMedicCrossbowSlot( void )
+{
+	if ( !CanBeUsedByClass( TF_CLASS_MEDIC ) )
+		return;
+
+	const char *pszItemClass = GetItemClass();
+	if ( !pszItemClass || V_stricmp( pszItemClass, "tf_weapon_crossbow" ) )
+		return;
+
+	if ( m_iLoadoutSlots[TF_CLASS_MEDIC] != LOADOUT_POSITION_PRIMARY
+		&& m_iDefaultLoadoutSlot != LOADOUT_POSITION_PRIMARY )
+		return;
+
+	if ( m_iLoadoutSlots[TF_CLASS_MEDIC] == LOADOUT_POSITION_PRIMARY
+		|| m_iLoadoutSlots[TF_CLASS_MEDIC] == LOADOUT_POSITION_INVALID )
+	{
+		m_iLoadoutSlots[TF_CLASS_MEDIC] = LOADOUT_POSITION_MEDIC_CROSSBOW;
+	}
+
+	bool bMedicOnly = true;
+	for ( int i = 0; i < LOADOUT_COUNT; ++i )
+	{
+		if ( i == TF_CLASS_MEDIC )
+			continue;
+		if ( CanBeUsedByClass( i ) )
+		{
+			bMedicOnly = false;
+			break;
+		}
+	}
+
+	if ( bMedicOnly && m_iDefaultLoadoutSlot == LOADOUT_POSITION_PRIMARY )
+	{
+		m_iDefaultLoadoutSlot = LOADOUT_POSITION_MEDIC_CROSSBOW;
+	}
+}
+
+//-----------------------------------------------------------------------------
 // Purpose: Return the load-out slot that this item must be placed into
 //-----------------------------------------------------------------------------
 int CTFItemDefinition::GetLoadoutSlot( int iLoadoutClass ) const
@@ -2006,6 +2048,7 @@ const char *g_szLoadoutStringsForDisplay[] =
 	"#LoadoutSlot_SniperBow",		// LOADOUT_POSITION_SNIPER_BOW,
 	"#LoadoutSlot_SniperJar",		// LOADOUT_POSITION_SNIPER_JAR,
 	"#LoadoutSlot_SniperBackpack",	// LOADOUT_POSITION_SNIPER_BACKPACK,
+	"#LoadoutSlot_MedicCrossbow",	// LOADOUT_POSITION_MEDIC_CROSSBOW,
 
 };
 COMPILE_TIME_ASSERT( ARRAYSIZE( g_szLoadoutStringsForDisplay ) == CLASS_LOADOUT_POSITION_COUNT );
@@ -2123,7 +2166,7 @@ bool CTFItemSchema::BInitSchema( KeyValues *pKVRawDefinition, CUtlVector<CUtlStr
 	SCHEMA_INIT_SUBSTEP( CEconItemSchema::BInitSchema( pKVRawDefinition, pVecErrors ) );
 
 	// Scout drink (slot 4) and throwable (slot 5) sit past the stock items_game range.
-	EnsureClassItemSlotValid( LOADOUT_POSITION_SNIPER_BACKPACK );
+	EnsureClassItemSlotValid( LOADOUT_POSITION_MEDIC_CROSSBOW );
 
 	KeyValues *pKVMvmMaps = pKVRawDefinition->FindKey( "mvm_maps" );
 	SCHEMA_INIT_SUBSTEP( BInitMvmMissions( pKVMvmMaps, pVecErrors ) );
