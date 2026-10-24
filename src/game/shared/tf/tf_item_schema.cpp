@@ -1086,6 +1086,7 @@ bool CTFItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString> 
 	RemapEngineerToolSlot();
 	RemapSniperExtraSlots();
 	RemapMedicCrossbowSlot();
+	ShareShotgunWithShotgunClasses();
 
 #ifdef CLIENT_DLL
 	m_bHasDetailedIcon = pKVInitValues->GetBool( "has_detailed_icon" );
@@ -1134,6 +1135,7 @@ bool CTFItemDefinition::BInitFromTestItemKVs( int iNewDefIndex, KeyValues *pKVIt
 	RemapEngineerToolSlot();
 	RemapSniperExtraSlots();
 	RemapMedicCrossbowSlot();
+	ShareShotgunWithShotgunClasses();
 
 	KeyValues *pTauntKV = pKVItem->FindKey( "taunt" );
 	if ( pTauntKV )
@@ -1731,6 +1733,65 @@ void CTFItemDefinition::RemapMedicCrossbowSlot( void )
 	if ( bMedicOnly && m_iDefaultLoadoutSlot == LOADOUT_POSITION_PRIMARY )
 	{
 		m_iDefaultLoadoutSlot = LOADOUT_POSITION_MEDIC_CROSSBOW;
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Family Business, Reserve Shooter, and Widowmaker equip like the
+//			Panic Attack: secondary for Soldier, Pyro, and Heavy, primary for Engineer.
+//-----------------------------------------------------------------------------
+void CTFItemDefinition::ShareShotgunWithShotgunClasses( void )
+{
+	const char *pszName = GetDefinitionName();
+	const char *pszItemClass = GetItemClass();
+	if ( !pszName || !pszItemClass || !V_stristr( pszItemClass, "shotgun" ) )
+		return;
+
+	if ( !V_stristr( pszName, "Family Business" )
+		&& !V_stristr( pszName, "Reserve Shooter" )
+		&& !V_stristr( pszName, "Widowmaker" ) )
+		return;
+
+	KeyValues *pKV = GetRawDefinition();
+	KeyValues *pClasses = pKV ? pKV->FindKey( "used_by_classes", true ) : NULL;
+
+	const int iClasses[] =
+	{
+		TF_CLASS_SOLDIER,
+		TF_CLASS_PYRO,
+		TF_CLASS_HEAVYWEAPONS,
+		TF_CLASS_ENGINEER,
+	};
+
+	for ( int i = 0; i < ARRAYSIZE( iClasses ); ++i )
+	{
+		const int iClass = iClasses[i];
+		if ( m_vbClassUsability.IsBitSet( iClass ) )
+			continue;
+
+		m_vbClassUsability.Set( iClass );
+		m_iLoadoutSlots[iClass] = ( iClass == TF_CLASS_ENGINEER ) ? LOADOUT_POSITION_PRIMARY : LOADOUT_POSITION_SECONDARY;
+
+		const char *pszClassName = GetItemSchema()->GetClassUsabilityStrings()[iClass];
+		m_vecTags.AddToTail( GetItemSchema()->GetHandleForTag( CFmtStr( "auto__class_%s", pszClassName ).Get() ) );
+
+		if ( !pClasses || !pszClassName )
+			continue;
+
+		bool bHasKey = false;
+		for ( KeyValues *pKVClass = pClasses->GetFirstSubKey(); pKVClass; pKVClass = pKVClass->GetNextKey() )
+		{
+			if ( !V_stricmp( pKVClass->GetName(), pszClassName ) )
+			{
+				bHasKey = true;
+				break;
+			}
+		}
+
+		if ( !bHasKey )
+		{
+			pClasses->SetString( pszClassName, ( iClass == TF_CLASS_ENGINEER ) ? "primary" : "secondary" );
+		}
 	}
 }
 

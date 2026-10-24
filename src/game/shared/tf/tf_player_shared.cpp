@@ -12990,6 +12990,26 @@ int	CTFPlayer::GetMaxAmmo( int iAmmoIndex, int iClassIndex /*= -1*/ )
 	else if ( iAmmoIndex == TF_AMMO_METAL )
 	{
 		CALL_ATTRIB_HOOK_INT( iMax, mult_maxammo_metal );
+
+		// Widowmaker spends metal. Soldier, Pyro, and Heavy have no metal pool,
+		// so give them the engineer's 200 while that weapon is equipped.
+		if ( iMax <= 0 )
+		{
+			for ( int i = 0; i < WeaponCount(); ++i )
+			{
+				CBaseCombatWeapon *pWeapon = GetWeapon( i );
+				if ( !pWeapon )
+					continue;
+
+				int iUsesMetal = 0;
+				CALL_ATTRIB_HOOK_INT_ON_OTHER( pWeapon, iUsesMetal, mod_use_metal_ammo_type );
+				if ( iUsesMetal )
+				{
+					iMax = 200;
+					break;
+				}
+			}
+		}
 	}
 	else if ( iAmmoIndex == TF_AMMO_GRENADES1 )
 	{

@@ -1758,20 +1758,37 @@ wpntranslation_class_weapons_t pszWpnEntTranslationList[] =
 //-----------------------------------------------------------------------------
 const char *TranslateWeaponEntForClass( const char *pszName, int iClass )
 {
-	if ( pszName )
+	if ( !pszName )
+		return pszName;
+
+	const char *pszOriginal = pszName;
+
+	// Any class shotgun entity stands in for the generic shotgun, so a Heavy
+	// shotgun can be wielded by an Engineer and spawn the engineer shotgun.
+	if ( !Q_stricmp( pszName, "tf_weapon_shotgun_soldier" )
+		|| !Q_stricmp( pszName, "tf_weapon_shotgun_hwg" )
+		|| !Q_stricmp( pszName, "tf_weapon_shotgun_pyro" )
+		|| !Q_stricmp( pszName, "tf_weapon_shotgun_primary" ) )
 	{
-		for ( int i = 0; i < ARRAYSIZE(pszWpnEntTranslationList); i++ )
+		pszName = "tf_weapon_shotgun";
+	}
+
+	for ( int i = 0; i < ARRAYSIZE(pszWpnEntTranslationList); i++ )
+	{
+		if ( !Q_stricmp( pszName, pszWpnEntTranslationList[i].pszWpnString ) )
 		{
-			if ( !Q_stricmp( pszName, pszWpnEntTranslationList[i].pszWpnString ) )
-			{
-				const char *pTransName = pszWpnEntTranslationList[i].pszClassWpn[ iClass ];
-				Assert( pTransName && pTransName[0] );
+			if ( iClass < 0 || iClass >= TF_LAST_NORMAL_CLASS )
+				return pszOriginal;
+
+			const char *pTransName = pszWpnEntTranslationList[i].pszClassWpn[ iClass ];
+			if ( pTransName && pTransName[0] )
 				return pTransName;
-			}
+
+			return pszOriginal;
 		}
 	}
 
-	return pszName;
+	return pszOriginal;
 }
 
 //-----------------------------------------------------------------------------
