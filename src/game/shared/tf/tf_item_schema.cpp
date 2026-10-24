@@ -1354,8 +1354,8 @@ static bool ItemHasAttributeClass( const CTFItemDefinition *pDef, const char *ps
 }
 
 //-----------------------------------------------------------------------------
-// Purpose: Soldier key 4. Banners, gunboats, mantreads, and the B.A.S.E. Jumper
-//			leave secondary. Demoman keeps the parachute on secondary.
+// Purpose: Soldier key 4 is banners. Key 5 is gunboats, mantreads, and the
+//			B.A.S.E. Jumper. Demoman keeps the parachute on secondary.
 //-----------------------------------------------------------------------------
 void CTFItemDefinition::RemapSoldierBannerSlot( void )
 {
@@ -1368,33 +1368,33 @@ void CTFItemDefinition::RemapSoldierBannerSlot( void )
 
 	const char *pszItemClass = GetItemClass();
 	const char *pszName = GetDefinitionName();
-	bool bMove = false;
+	loadout_positions_t iNewSlot = LOADOUT_POSITION_INVALID;
 
 	if ( pszItemClass && !V_stricmp( pszItemClass, "tf_weapon_buff_item" ) )
 	{
-		bMove = true;
+		iNewSlot = LOADOUT_POSITION_SOLDIER_BANNER;
 	}
 	else if ( pszItemClass && V_stristr( pszItemClass, "tf_weapon_parachute" ) )
 	{
-		bMove = true;
+		iNewSlot = LOADOUT_POSITION_SOLDIER_PASSIVE;
 	}
 	else if ( ItemHasAttributeClass( this, "rocket_jump_dmg_reduction" )
 		|| ItemHasAttributeClass( this, "boots_falling_stomp" ) )
 	{
-		bMove = true;
+		iNewSlot = LOADOUT_POSITION_SOLDIER_PASSIVE;
 	}
 	else if ( pszName && ( V_stristr( pszName, "gunboat" ) || V_stristr( pszName, "mantread" ) ) )
 	{
-		bMove = true;
+		iNewSlot = LOADOUT_POSITION_SOLDIER_PASSIVE;
 	}
 
-	if ( !bMove )
+	if ( iNewSlot == LOADOUT_POSITION_INVALID )
 		return;
 
 	if ( m_iLoadoutSlots[TF_CLASS_SOLDIER] == LOADOUT_POSITION_SECONDARY
 		|| m_iLoadoutSlots[TF_CLASS_SOLDIER] == LOADOUT_POSITION_INVALID )
 	{
-		m_iLoadoutSlots[TF_CLASS_SOLDIER] = LOADOUT_POSITION_SOLDIER_BANNER;
+		m_iLoadoutSlots[TF_CLASS_SOLDIER] = iNewSlot;
 	}
 
 	bool bSoldierOnly = true;
@@ -1411,7 +1411,7 @@ void CTFItemDefinition::RemapSoldierBannerSlot( void )
 
 	if ( bSoldierOnly && m_iDefaultLoadoutSlot == LOADOUT_POSITION_SECONDARY )
 	{
-		m_iDefaultLoadoutSlot = LOADOUT_POSITION_SOLDIER_BANNER;
+		m_iDefaultLoadoutSlot = iNewSlot;
 	}
 }
 
@@ -1718,6 +1718,7 @@ const char *g_szLoadoutStringsForDisplay[] =
 	"#LoadoutSlot_ScoutDrink",		// LOADOUT_POSITION_SCOUT_DRINK,
 	"#LoadoutSlot_ScoutThrowable",	// LOADOUT_POSITION_SCOUT_THROWABLE,
 	"#LoadoutSlot_SoldierBanner",	// LOADOUT_POSITION_SOLDIER_BANNER,
+	"#LoadoutSlot_SoldierPassive",	// LOADOUT_POSITION_SOLDIER_PASSIVE,
 
 };
 COMPILE_TIME_ASSERT( ARRAYSIZE( g_szLoadoutStringsForDisplay ) == CLASS_LOADOUT_POSITION_COUNT );
@@ -1835,7 +1836,7 @@ bool CTFItemSchema::BInitSchema( KeyValues *pKVRawDefinition, CUtlVector<CUtlStr
 	SCHEMA_INIT_SUBSTEP( CEconItemSchema::BInitSchema( pKVRawDefinition, pVecErrors ) );
 
 	// Scout drink (slot 4) and throwable (slot 5) sit past the stock items_game range.
-	EnsureClassItemSlotValid( LOADOUT_POSITION_SOLDIER_BANNER );
+	EnsureClassItemSlotValid( LOADOUT_POSITION_SOLDIER_PASSIVE );
 
 	KeyValues *pKVMvmMaps = pKVRawDefinition->FindKey( "mvm_maps" );
 	SCHEMA_INIT_SUBSTEP( BInitMvmMissions( pKVMvmMaps, pVecErrors ) );

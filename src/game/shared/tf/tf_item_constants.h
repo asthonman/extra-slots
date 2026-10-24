@@ -82,8 +82,9 @@ enum loadout_positions_t
 	LOADOUT_POSITION_SCOUT_DRINK,
 	LOADOUT_POSITION_SCOUT_THROWABLE,
 
-	// Soldier key 4. Banners and passive secondaries (gunboats, mantreads, B.A.S.E. Jumper).
+	// Soldier key 4 is banners. Key 5 is gunboats, mantreads, and the B.A.S.E. Jumper.
 	LOADOUT_POSITION_SOLDIER_BANNER,
+	LOADOUT_POSITION_SOLDIER_PASSIVE,
 
 	CLASS_LOADOUT_POSITION_COUNT,
 };
@@ -160,7 +161,8 @@ inline bool IsExtraClassWeaponSlot( int iSlot )
 {
 	return iSlot == LOADOUT_POSITION_SCOUT_DRINK
 		|| iSlot == LOADOUT_POSITION_SCOUT_THROWABLE
-		|| iSlot == LOADOUT_POSITION_SOLDIER_BANNER;
+		|| iSlot == LOADOUT_POSITION_SOLDIER_BANNER
+		|| iSlot == LOADOUT_POSITION_SOLDIER_PASSIVE;
 }
 
 inline bool IsValidPickupWeaponSlot( int iSlot )
@@ -170,7 +172,8 @@ inline bool IsValidPickupWeaponSlot( int iSlot )
 		|| iSlot == LOADOUT_POSITION_MELEE
 		|| iSlot == LOADOUT_POSITION_SCOUT_DRINK
 		|| iSlot == LOADOUT_POSITION_SCOUT_THROWABLE
-		|| iSlot == LOADOUT_POSITION_SOLDIER_BANNER;
+		|| iSlot == LOADOUT_POSITION_SOLDIER_BANNER
+		|| iSlot == LOADOUT_POSITION_SOLDIER_PASSIVE;
 }
 
 

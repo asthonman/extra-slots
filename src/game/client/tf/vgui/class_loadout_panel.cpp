@@ -128,6 +128,7 @@ const LoadoutPanelPositioningInstance g_DefaultLoadoutPanelPositioning =
 		0,	// LOADOUT_POSITION_SCOUT_DRINK,
 		0,	// LOADOUT_POSITION_SCOUT_THROWABLE,
 		0,	// LOADOUT_POSITION_SOLDIER_BANNER,
+		0,	// LOADOUT_POSITION_SOLDIER_PASSIVE,
 
 	}
 };
@@ -157,6 +158,7 @@ const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Scout =
 		4,	// LOADOUT_POSITION_SCOUT_DRINK,		// key 4
 		5,	// LOADOUT_POSITION_SCOUT_THROWABLE,	// key 5
 		0,	// LOADOUT_POSITION_SOLDIER_BANNER,
+		0,	// LOADOUT_POSITION_SOLDIER_PASSIVE,
 	}
 };
 
@@ -185,6 +187,7 @@ const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Spy =
 		0,	// LOADOUT_POSITION_SCOUT_DRINK,
 		0,	// LOADOUT_POSITION_SCOUT_THROWABLE,
 		0,	// LOADOUT_POSITION_SOLDIER_BANNER,
+		0,	// LOADOUT_POSITION_SOLDIER_PASSIVE,
 	}
 };
 
@@ -213,6 +216,7 @@ const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Engineer =
 		0,	// LOADOUT_POSITION_SCOUT_DRINK,
 		0,	// LOADOUT_POSITION_SCOUT_THROWABLE,
 		0,	// LOADOUT_POSITION_SOLDIER_BANNER,
+		0,	// LOADOUT_POSITION_SOLDIER_PASSIVE,
 	}
 };
 
@@ -226,10 +230,10 @@ const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Soldier =
 		0,	// LOADOUT_POSITION_BUILDING,
 		0,	// LOADOUT_POSITION_PDA,
 		0,	// LOADOUT_POSITION_PDA2,
-		5,	// LOADOUT_POSITION_HEAD,
-		6,	// LOADOUT_POSITION_MISC,
-		8,	// LOADOUT_POSITION_ACTION,
-		7,	// LOADOUT_POSITION_MISC2,
+		6,	// LOADOUT_POSITION_HEAD,
+		7,	// LOADOUT_POSITION_MISC,
+		9,	// LOADOUT_POSITION_ACTION,
+		8,	// LOADOUT_POSITION_MISC2,
 		11,	// LOADOUT_POSITION_TAUNT,
 		12,	// LOADOUT_POSITION_TAUNT2,
 		13,	// LOADOUT_POSITION_TAUNT3,
@@ -240,7 +244,8 @@ const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Soldier =
 		18,	// LOADOUT_POSITION_TAUNT8,
 		0,	// LOADOUT_POSITION_SCOUT_DRINK,
 		0,	// LOADOUT_POSITION_SCOUT_THROWABLE,
-		4,	// LOADOUT_POSITION_SOLDIER_BANNER,	// key 4
+		4,	// LOADOUT_POSITION_SOLDIER_BANNER,		// key 4
+		5,	// LOADOUT_POSITION_SOLDIER_PASSIVE,	// key 5
 	}
 };
 
@@ -665,7 +670,7 @@ void CClassLoadoutPanel::PerformLayout( void )
 			m_pItemModelPanels[i]->SetNoItemText( ItemSystem()->GetItemSchema()->GetLoadoutStringsForDisplay( EEquipType_t::EQUIP_TYPE_CLASS )[i] );
 
 			int iCenter = GetWide() * 0.5;
-			int iColumnHeight = ( !m_bInTauntLoadoutMode && m_iCurrentClassIndex == TF_CLASS_SCOUT ) ? 5 : 4;
+			int iColumnHeight = ( !m_bInTauntLoadoutMode && ( m_iCurrentClassIndex == TF_CLASS_SCOUT || m_iCurrentClassIndex == TF_CLASS_SOLDIER ) ) ? 5 : 4;
 			int iColumn = iButtonPos / iColumnHeight;
 			int iYButtonPos = iButtonPos % iColumnHeight;
 			
