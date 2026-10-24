@@ -95,6 +95,9 @@ enum loadout_positions_t
 	LOADOUT_POSITION_DEMO_SHIELD,
 	LOADOUT_POSITION_DEMO_BOOTS,
 
+	// Heavy key 4. Sandvich, Dalokohs Bar, Buffalo Steak, Second Banana, and the Fishcake.
+	LOADOUT_POSITION_HEAVY_LUNCHBOX,
+
 	CLASS_LOADOUT_POSITION_COUNT,
 };
 
@@ -176,7 +179,8 @@ inline bool IsExtraClassWeaponSlot( int iSlot )
 		|| iSlot == LOADOUT_POSITION_PYRO_JETPACK
 		|| iSlot == LOADOUT_POSITION_PYRO_GAS
 		|| iSlot == LOADOUT_POSITION_DEMO_SHIELD
-		|| iSlot == LOADOUT_POSITION_DEMO_BOOTS;
+		|| iSlot == LOADOUT_POSITION_DEMO_BOOTS
+		|| iSlot == LOADOUT_POSITION_HEAVY_LUNCHBOX;
 }
 
 inline bool IsValidPickupWeaponSlot( int iSlot )
@@ -192,7 +196,8 @@ inline bool IsValidPickupWeaponSlot( int iSlot )
 		|| iSlot == LOADOUT_POSITION_PYRO_JETPACK
 		|| iSlot == LOADOUT_POSITION_PYRO_GAS
 		|| iSlot == LOADOUT_POSITION_DEMO_SHIELD
-		|| iSlot == LOADOUT_POSITION_DEMO_BOOTS;
+		|| iSlot == LOADOUT_POSITION_DEMO_BOOTS
+		|| iSlot == LOADOUT_POSITION_HEAVY_LUNCHBOX;
 }
 
 

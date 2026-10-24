@@ -1082,6 +1082,7 @@ bool CTFItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString> 
 	RemapSoldierBannerSlot();
 	RemapPyroExtraWeaponSlots();
 	RemapDemomanExtraSlots();
+	RemapHeavyLunchboxSlot();
 
 #ifdef CLIENT_DLL
 	m_bHasDetailedIcon = pKVInitValues->GetBool( "has_detailed_icon" );
@@ -1126,6 +1127,7 @@ bool CTFItemDefinition::BInitFromTestItemKVs( int iNewDefIndex, KeyValues *pKVIt
 	RemapSoldierBannerSlot();
 	RemapPyroExtraWeaponSlots();
 	RemapDemomanExtraSlots();
+	RemapHeavyLunchboxSlot();
 
 	KeyValues *pTauntKV = pKVItem->FindKey( "taunt" );
 	if ( pTauntKV )
@@ -1541,6 +1543,46 @@ void CTFItemDefinition::RemapDemomanExtraSlots( void )
 }
 
 //-----------------------------------------------------------------------------
+// Purpose: Heavy lunchboxes leave secondary for key 4. Scout drinks are not lunchboxes.
+//-----------------------------------------------------------------------------
+void CTFItemDefinition::RemapHeavyLunchboxSlot( void )
+{
+	if ( !CanBeUsedByClass( TF_CLASS_HEAVYWEAPONS ) )
+		return;
+
+	const char *pszItemClass = GetItemClass();
+	if ( !pszItemClass || V_stricmp( pszItemClass, "tf_weapon_lunchbox" ) )
+		return;
+
+	if ( m_iLoadoutSlots[TF_CLASS_HEAVYWEAPONS] != LOADOUT_POSITION_SECONDARY
+		&& m_iDefaultLoadoutSlot != LOADOUT_POSITION_SECONDARY )
+		return;
+
+	if ( m_iLoadoutSlots[TF_CLASS_HEAVYWEAPONS] == LOADOUT_POSITION_SECONDARY
+		|| m_iLoadoutSlots[TF_CLASS_HEAVYWEAPONS] == LOADOUT_POSITION_INVALID )
+	{
+		m_iLoadoutSlots[TF_CLASS_HEAVYWEAPONS] = LOADOUT_POSITION_HEAVY_LUNCHBOX;
+	}
+
+	bool bHeavyOnly = true;
+	for ( int i = 0; i < LOADOUT_COUNT; ++i )
+	{
+		if ( i == TF_CLASS_HEAVYWEAPONS )
+			continue;
+		if ( CanBeUsedByClass( i ) )
+		{
+			bHeavyOnly = false;
+			break;
+		}
+	}
+
+	if ( bHeavyOnly && m_iDefaultLoadoutSlot == LOADOUT_POSITION_SECONDARY )
+	{
+		m_iDefaultLoadoutSlot = LOADOUT_POSITION_HEAVY_LUNCHBOX;
+	}
+}
+
+//-----------------------------------------------------------------------------
 // Purpose: Return the load-out slot that this item must be placed into
 //-----------------------------------------------------------------------------
 int CTFItemDefinition::GetLoadoutSlot( int iLoadoutClass ) const
@@ -1849,6 +1891,7 @@ const char *g_szLoadoutStringsForDisplay[] =
 	"#LoadoutSlot_PyroGas",			// LOADOUT_POSITION_PYRO_GAS,
 	"#LoadoutSlot_DemoShield",		// LOADOUT_POSITION_DEMO_SHIELD,
 	"#LoadoutSlot_DemoBoots",		// LOADOUT_POSITION_DEMO_BOOTS,
+	"#LoadoutSlot_HeavyLunchbox",	// LOADOUT_POSITION_HEAVY_LUNCHBOX,
 
 };
 COMPILE_TIME_ASSERT( ARRAYSIZE( g_szLoadoutStringsForDisplay ) == CLASS_LOADOUT_POSITION_COUNT );
@@ -1966,7 +2009,7 @@ bool CTFItemSchema::BInitSchema( KeyValues *pKVRawDefinition, CUtlVector<CUtlStr
 	SCHEMA_INIT_SUBSTEP( CEconItemSchema::BInitSchema( pKVRawDefinition, pVecErrors ) );
 
 	// Scout drink (slot 4) and throwable (slot 5) sit past the stock items_game range.
-	EnsureClassItemSlotValid( LOADOUT_POSITION_DEMO_BOOTS );
+	EnsureClassItemSlotValid( LOADOUT_POSITION_HEAVY_LUNCHBOX );
 
 	KeyValues *pKVMvmMaps = pKVRawDefinition->FindKey( "mvm_maps" );
 	SCHEMA_INIT_SUBSTEP( BInitMvmMissions( pKVMvmMaps, pVecErrors ) );

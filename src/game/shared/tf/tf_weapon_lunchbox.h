@@ -54,6 +54,7 @@ public:
 	virtual void	UpdateOnRemove( void ) OVERRIDE;
 	virtual void	Precache() OVERRIDE;
 	virtual int		GetWeaponID( void ) const OVERRIDE { return TF_WEAPON_LUNCHBOX; }
+	virtual int		GetSlot( void ) const OVERRIDE { return 3; }	// key 4. Shotgun stays on key 2.
 	virtual void	PrimaryAttack() OVERRIDE;
 	virtual void	SecondaryAttack() OVERRIDE;
 	virtual void	WeaponReset( void ) OVERRIDE;
