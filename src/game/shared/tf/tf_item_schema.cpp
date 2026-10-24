@@ -1083,6 +1083,7 @@ bool CTFItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString> 
 	RemapPyroExtraWeaponSlots();
 	RemapDemomanExtraSlots();
 	RemapHeavyLunchboxSlot();
+	RemapEngineerToolSlot();
 
 #ifdef CLIENT_DLL
 	m_bHasDetailedIcon = pKVInitValues->GetBool( "has_detailed_icon" );
@@ -1128,6 +1129,7 @@ bool CTFItemDefinition::BInitFromTestItemKVs( int iNewDefIndex, KeyValues *pKVIt
 	RemapPyroExtraWeaponSlots();
 	RemapDemomanExtraSlots();
 	RemapHeavyLunchboxSlot();
+	RemapEngineerToolSlot();
 
 	KeyValues *pTauntKV = pKVItem->FindKey( "taunt" );
 	if ( pTauntKV )
@@ -1583,6 +1585,50 @@ void CTFItemDefinition::RemapHeavyLunchboxSlot( void )
 }
 
 //-----------------------------------------------------------------------------
+// Purpose: Engineer key 6. Wrangler (and the Giger Counter) and the Short Circuit
+//			leave secondary. The pistol stays there.
+//-----------------------------------------------------------------------------
+void CTFItemDefinition::RemapEngineerToolSlot( void )
+{
+	if ( !CanBeUsedByClass( TF_CLASS_ENGINEER ) )
+		return;
+
+	const char *pszItemClass = GetItemClass();
+	if ( !pszItemClass )
+		return;
+
+	if ( V_stricmp( pszItemClass, "tf_weapon_laser_pointer" ) && V_stricmp( pszItemClass, "tf_weapon_mechanical_arm" ) )
+		return;
+
+	if ( m_iLoadoutSlots[TF_CLASS_ENGINEER] != LOADOUT_POSITION_SECONDARY
+		&& m_iDefaultLoadoutSlot != LOADOUT_POSITION_SECONDARY )
+		return;
+
+	if ( m_iLoadoutSlots[TF_CLASS_ENGINEER] == LOADOUT_POSITION_SECONDARY
+		|| m_iLoadoutSlots[TF_CLASS_ENGINEER] == LOADOUT_POSITION_INVALID )
+	{
+		m_iLoadoutSlots[TF_CLASS_ENGINEER] = LOADOUT_POSITION_ENGINEER_TOOL;
+	}
+
+	bool bEngineerOnly = true;
+	for ( int i = 0; i < LOADOUT_COUNT; ++i )
+	{
+		if ( i == TF_CLASS_ENGINEER )
+			continue;
+		if ( CanBeUsedByClass( i ) )
+		{
+			bEngineerOnly = false;
+			break;
+		}
+	}
+
+	if ( bEngineerOnly && m_iDefaultLoadoutSlot == LOADOUT_POSITION_SECONDARY )
+	{
+		m_iDefaultLoadoutSlot = LOADOUT_POSITION_ENGINEER_TOOL;
+	}
+}
+
+//-----------------------------------------------------------------------------
 // Purpose: Return the load-out slot that this item must be placed into
 //-----------------------------------------------------------------------------
 int CTFItemDefinition::GetLoadoutSlot( int iLoadoutClass ) const
@@ -1892,6 +1938,7 @@ const char *g_szLoadoutStringsForDisplay[] =
 	"#LoadoutSlot_DemoShield",		// LOADOUT_POSITION_DEMO_SHIELD,
 	"#LoadoutSlot_DemoBoots",		// LOADOUT_POSITION_DEMO_BOOTS,
 	"#LoadoutSlot_HeavyLunchbox",	// LOADOUT_POSITION_HEAVY_LUNCHBOX,
+	"#LoadoutSlot_EngineerTool",	// LOADOUT_POSITION_ENGINEER_TOOL,
 
 };
 COMPILE_TIME_ASSERT( ARRAYSIZE( g_szLoadoutStringsForDisplay ) == CLASS_LOADOUT_POSITION_COUNT );
@@ -2009,7 +2056,7 @@ bool CTFItemSchema::BInitSchema( KeyValues *pKVRawDefinition, CUtlVector<CUtlStr
 	SCHEMA_INIT_SUBSTEP( CEconItemSchema::BInitSchema( pKVRawDefinition, pVecErrors ) );
 
 	// Scout drink (slot 4) and throwable (slot 5) sit past the stock items_game range.
-	EnsureClassItemSlotValid( LOADOUT_POSITION_HEAVY_LUNCHBOX );
+	EnsureClassItemSlotValid( LOADOUT_POSITION_ENGINEER_TOOL );
 
 	KeyValues *pKVMvmMaps = pKVRawDefinition->FindKey( "mvm_maps" );
 	SCHEMA_INIT_SUBSTEP( BInitMvmMissions( pKVMvmMaps, pVecErrors ) );

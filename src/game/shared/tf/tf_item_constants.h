@@ -98,6 +98,9 @@ enum loadout_positions_t
 	// Heavy key 4. Sandvich, Dalokohs Bar, Buffalo Steak, Second Banana, and the Fishcake.
 	LOADOUT_POSITION_HEAVY_LUNCHBOX,
 
+	// Engineer key 6. Wrangler is stock. Giger Counter and Short Circuit replace it.
+	LOADOUT_POSITION_ENGINEER_TOOL,
+
 	CLASS_LOADOUT_POSITION_COUNT,
 };
 
@@ -180,7 +183,8 @@ inline bool IsExtraClassWeaponSlot( int iSlot )
 		|| iSlot == LOADOUT_POSITION_PYRO_GAS
 		|| iSlot == LOADOUT_POSITION_DEMO_SHIELD
 		|| iSlot == LOADOUT_POSITION_DEMO_BOOTS
-		|| iSlot == LOADOUT_POSITION_HEAVY_LUNCHBOX;
+		|| iSlot == LOADOUT_POSITION_HEAVY_LUNCHBOX
+		|| iSlot == LOADOUT_POSITION_ENGINEER_TOOL;
 }
 
 inline bool IsValidPickupWeaponSlot( int iSlot )
@@ -197,7 +201,8 @@ inline bool IsValidPickupWeaponSlot( int iSlot )
 		|| iSlot == LOADOUT_POSITION_PYRO_GAS
 		|| iSlot == LOADOUT_POSITION_DEMO_SHIELD
 		|| iSlot == LOADOUT_POSITION_DEMO_BOOTS
-		|| iSlot == LOADOUT_POSITION_HEAVY_LUNCHBOX;
+		|| iSlot == LOADOUT_POSITION_HEAVY_LUNCHBOX
+		|| iSlot == LOADOUT_POSITION_ENGINEER_TOOL;
 }
 
 

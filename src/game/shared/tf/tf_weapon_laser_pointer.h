@@ -56,6 +56,7 @@ public:
 	~CTFLaserPointer();
 
 	virtual int	GetWeaponID( void ) const			{ return TF_WEAPON_LASER_POINTER; }
+	virtual int	GetSlot( void ) const OVERRIDE	{ return 5; }	// key 6. Pistol stays on key 2.
 
 	virtual void Precache();
 	virtual bool Deploy( void );

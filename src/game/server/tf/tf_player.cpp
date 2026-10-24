@@ -19391,6 +19391,7 @@ void CTFPlayer::ModifyOrAppendCriteria( AI_CriteriaSet& criteriaSet )
 			"loadout_slot_demo_shield",		// LOADOUT_POSITION_DEMO_SHIELD
 			"loadout_slot_demo_boots",		// LOADOUT_POSITION_DEMO_BOOTS
 			"loadout_slot_heavy_lunchbox",	// LOADOUT_POSITION_HEAVY_LUNCHBOX
+			"loadout_slot_engineer_tool",	// LOADOUT_POSITION_ENGINEER_TOOL
 		};
 		COMPILE_TIME_ASSERT( ARRAYSIZE(kSlotCriteriaName) == CLASS_LOADOUT_POSITION_COUNT );
 		CEconItemView *pItem = NULL;

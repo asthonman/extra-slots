@@ -44,6 +44,7 @@ public:
 	virtual void	PrimaryAttack();
 	virtual void	SecondaryAttack( void );
 	virtual int		GetWeaponID( void ) const			{ return TF_WEAPON_MECHANICAL_ARM; }
+	virtual int		GetSlot( void ) const OVERRIDE		{ return 5; }	// key 6. Pistol stays on key 2.
 	virtual int		GetCustomDamageType( ) const		{ return TF_DMG_CUSTOM_PLASMA; }
 
 	virtual int		GetAmmoPerShot( void );

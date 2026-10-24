@@ -646,6 +646,11 @@ bool CTFInventoryManager::SlotContainsBaseItems( EEquipType_t eType, int iSlot )
 		if ( TFGameRules() && TFGameRules()->IsUsingGrapplingHook() )
 			return true;
 	}
+
+	// Engineer key 6 always has the Wrangler as its stock item.
+	if ( iSlot == LOADOUT_POSITION_ENGINEER_TOOL )
+		return true;
+
 	// Normal game
 	return iSlot < LOADOUT_POSITION_HEAD;
 }
@@ -667,6 +672,59 @@ CEconItemView *CTFInventoryManager::GetBaseItemForClass( int iClass, int iSlot )
 
 	if ( iClass < TF_FIRST_NORMAL_CLASS || iClass >= TF_CLASS_COUNT || iSlot < 0 || iSlot >= CLASS_LOADOUT_POSITION_COUNT )
 		return m_pDefaultItem;
+
+	// The Wrangler is stock in the engineer's sixth slot. It is not a schema baseitem
+	// because the pistol still owns secondary.
+	if ( iClass == TF_CLASS_ENGINEER && iSlot == LOADOUT_POSITION_ENGINEER_TOOL )
+	{
+		static CEconItemView s_WranglerItem;
+		static bool s_bWranglerInit = false;
+		if ( !s_bWranglerInit )
+		{
+			const CEconItemDefinition *pWrangler = NULL;
+			const char *pszNames[] =
+			{
+				"The Wrangler",
+				"Wrangler",
+				"Upgradeable TF_WEAPON_LASER_POINTER",
+				"TF_WEAPON_LASER_POINTER",
+			};
+			for ( int i = 0; i < ARRAYSIZE( pszNames ); ++i )
+			{
+				pWrangler = GetItemSchema()->GetItemDefinitionByName( pszNames[i] );
+				if ( pWrangler )
+					break;
+			}
+
+			if ( !pWrangler )
+			{
+				const CEconItemSchema::ItemDefinitionMap_t &mapItems = GetItemSchema()->GetItemDefinitionMap();
+				FOR_EACH_MAP_FAST( mapItems, i )
+				{
+					const CEconItemDefinition *pDef = mapItems[i];
+					if ( !pDef || !pDef->GetItemClass() || V_stricmp( pDef->GetItemClass(), "tf_weapon_laser_pointer" ) )
+						continue;
+
+					const char *pszName = pDef->GetDefinitionName();
+					if ( pszName && V_stristr( pszName, "giger" ) )
+						continue;
+
+					pWrangler = pDef;
+					if ( pszName && V_stristr( pszName, "wrangler" ) )
+						break;
+				}
+			}
+
+			if ( pWrangler )
+			{
+				s_WranglerItem.Init( pWrangler->GetDefinitionIndex(), AE_USE_SCRIPT_VALUE, AE_USE_SCRIPT_VALUE, false );
+				s_bWranglerInit = true;
+			}
+		}
+
+		if ( s_bWranglerInit )
+			return &s_WranglerItem;
+	}
 
 	// Halloween spellbook
 	if ( iSlot == LOADOUT_POSITION_ACTION )
