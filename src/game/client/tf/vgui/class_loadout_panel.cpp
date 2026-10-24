@@ -132,6 +132,8 @@ const LoadoutPanelPositioningInstance g_DefaultLoadoutPanelPositioning =
 		0,	// LOADOUT_POSITION_PYRO_FLARE,
 		0,	// LOADOUT_POSITION_PYRO_JETPACK,
 		0,	// LOADOUT_POSITION_PYRO_GAS,
+		0,	// LOADOUT_POSITION_DEMO_SHIELD,
+		0,	// LOADOUT_POSITION_DEMO_BOOTS,
 
 	}
 };
@@ -165,6 +167,8 @@ const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Scout =
 		0,	// LOADOUT_POSITION_PYRO_FLARE,
 		0,	// LOADOUT_POSITION_PYRO_JETPACK,
 		0,	// LOADOUT_POSITION_PYRO_GAS,
+		0,	// LOADOUT_POSITION_DEMO_SHIELD,
+		0,	// LOADOUT_POSITION_DEMO_BOOTS,
 	}
 };
 
@@ -197,6 +201,8 @@ const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Spy =
 		0,	// LOADOUT_POSITION_PYRO_FLARE,
 		0,	// LOADOUT_POSITION_PYRO_JETPACK,
 		0,	// LOADOUT_POSITION_PYRO_GAS,
+		0,	// LOADOUT_POSITION_DEMO_SHIELD,
+		0,	// LOADOUT_POSITION_DEMO_BOOTS,
 	}
 };
 
@@ -229,6 +235,8 @@ const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Engineer =
 		0,	// LOADOUT_POSITION_PYRO_FLARE,
 		0,	// LOADOUT_POSITION_PYRO_JETPACK,
 		0,	// LOADOUT_POSITION_PYRO_GAS,
+		0,	// LOADOUT_POSITION_DEMO_SHIELD,
+		0,	// LOADOUT_POSITION_DEMO_BOOTS,
 	}
 };
 
@@ -261,6 +269,8 @@ const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Soldier =
 		0,	// LOADOUT_POSITION_PYRO_FLARE,
 		0,	// LOADOUT_POSITION_PYRO_JETPACK,
 		0,	// LOADOUT_POSITION_PYRO_GAS,
+		0,	// LOADOUT_POSITION_DEMO_SHIELD,
+		0,	// LOADOUT_POSITION_DEMO_BOOTS,
 	}
 };
 
@@ -293,6 +303,42 @@ const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Pyro =
 		4,	// LOADOUT_POSITION_PYRO_FLARE,		// key 4
 		5,	// LOADOUT_POSITION_PYRO_JETPACK,	// key 5
 		6,	// LOADOUT_POSITION_PYRO_GAS,		// key 6
+		0,	// LOADOUT_POSITION_DEMO_SHIELD,
+		0,	// LOADOUT_POSITION_DEMO_BOOTS,
+	}
+};
+
+const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Demoman =
+{
+	{
+		1,	// LOADOUT_POSITION_PRIMARY = 0,
+		2,	// LOADOUT_POSITION_SECONDARY,
+		3,	// LOADOUT_POSITION_MELEE,
+		0,	// LOADOUT_POSITION_UTILITY,  // STAGING ONLY
+		0,	// LOADOUT_POSITION_BUILDING,
+		0,	// LOADOUT_POSITION_PDA,
+		0,	// LOADOUT_POSITION_PDA2,
+		6,	// LOADOUT_POSITION_HEAD,
+		7,	// LOADOUT_POSITION_MISC,
+		9,	// LOADOUT_POSITION_ACTION,
+		8,	// LOADOUT_POSITION_MISC2,
+		11,	// LOADOUT_POSITION_TAUNT,
+		12,	// LOADOUT_POSITION_TAUNT2,
+		13,	// LOADOUT_POSITION_TAUNT3,
+		14,	// LOADOUT_POSITION_TAUNT4,
+		15,	// LOADOUT_POSITION_TAUNT5,
+		16,	// LOADOUT_POSITION_TAUNT6,
+		17,	// LOADOUT_POSITION_TAUNT7,
+		18,	// LOADOUT_POSITION_TAUNT8,
+		0,	// LOADOUT_POSITION_SCOUT_DRINK,
+		0,	// LOADOUT_POSITION_SCOUT_THROWABLE,
+		0,	// LOADOUT_POSITION_SOLDIER_BANNER,
+		0,	// LOADOUT_POSITION_SOLDIER_PASSIVE,
+		0,	// LOADOUT_POSITION_PYRO_FLARE,
+		0,	// LOADOUT_POSITION_PYRO_JETPACK,
+		0,	// LOADOUT_POSITION_PYRO_GAS,
+		4,	// LOADOUT_POSITION_DEMO_SHIELD,	// key 4
+		5,	// LOADOUT_POSITION_DEMO_BOOTS,		// end of the weapon column
 	}
 };
 
@@ -302,7 +348,7 @@ const LoadoutPanelPositioningInstance *g_VisibleLoadoutSlotsPerClass[] =
 	&g_LoadoutPanelPositioning_Scout,			// TF_CLASS_SCOUT
 	&g_DefaultLoadoutPanelPositioning,			// TF_CLASS_SNIPER
 	&g_LoadoutPanelPositioning_Soldier,			// TF_CLASS_SOLDIER
-	&g_DefaultLoadoutPanelPositioning,			// TF_CLASS_DEMOMAN
+	&g_LoadoutPanelPositioning_Demoman,			// TF_CLASS_DEMOMAN
 	&g_DefaultLoadoutPanelPositioning,			// TF_CLASS_MEDIC
 	&g_DefaultLoadoutPanelPositioning,			// TF_CLASS_HEAVYWEAPONS
 	&g_LoadoutPanelPositioning_Pyro,			// TF_CLASS_PYRO
@@ -722,7 +768,7 @@ void CClassLoadoutPanel::PerformLayout( void )
 			{
 				if ( m_iCurrentClassIndex == TF_CLASS_PYRO )
 					iColumnHeight = 6;
-				else if ( m_iCurrentClassIndex == TF_CLASS_SCOUT || m_iCurrentClassIndex == TF_CLASS_SOLDIER )
+				else if ( m_iCurrentClassIndex == TF_CLASS_SCOUT || m_iCurrentClassIndex == TF_CLASS_SOLDIER || m_iCurrentClassIndex == TF_CLASS_DEMOMAN )
 					iColumnHeight = 5;
 			}
 			int iColumn = iButtonPos / iColumnHeight;
@@ -1372,7 +1418,7 @@ void CClassLoadoutPanel::OnCommand( const char *command )
 					int iColumnHeight = 4;
 					if ( m_iCurrentClassIndex == TF_CLASS_PYRO )
 						iColumnHeight = 6;
-					else if ( m_iCurrentClassIndex == TF_CLASS_SCOUT || m_iCurrentClassIndex == TF_CLASS_SOLDIER )
+					else if ( m_iCurrentClassIndex == TF_CLASS_SCOUT || m_iCurrentClassIndex == TF_CLASS_SOLDIER || m_iCurrentClassIndex == TF_CLASS_DEMOMAN )
 						iColumnHeight = 5;
 					int iColumn = ( iButtonPos > 0 ) ? ( iButtonPos / iColumnHeight ) : 0;
 					PinCorner_e myCornerToPin = iColumn == 0 ? PIN_TOPLEFT : PIN_TOPRIGHT;

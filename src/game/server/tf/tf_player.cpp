@@ -19388,6 +19388,8 @@ void CTFPlayer::ModifyOrAppendCriteria( AI_CriteriaSet& criteriaSet )
 			"loadout_slot_pyro_flare",		// LOADOUT_POSITION_PYRO_FLARE
 			"loadout_slot_pyro_jetpack",	// LOADOUT_POSITION_PYRO_JETPACK
 			"loadout_slot_pyro_gas",		// LOADOUT_POSITION_PYRO_GAS
+			"loadout_slot_demo_shield",		// LOADOUT_POSITION_DEMO_SHIELD
+			"loadout_slot_demo_boots",		// LOADOUT_POSITION_DEMO_BOOTS
 		};
 		COMPILE_TIME_ASSERT( ARRAYSIZE(kSlotCriteriaName) == CLASS_LOADOUT_POSITION_COUNT );
 		CEconItemView *pItem = NULL;

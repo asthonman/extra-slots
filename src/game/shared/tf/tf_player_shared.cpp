@@ -11620,6 +11620,16 @@ void CTFPlayer::ItemPostFrame()
 {
 	m_Shared.UpdateItemChargeMeters();
 
+	// Demoman shield charge is mouse3 so mouse2 can still detonate stickies.
+	if ( IsPlayerClass( TF_CLASS_DEMOMAN ) )
+	{
+		CTFWearableDemoShield *pShield = GetEquippedDemoShield( this );
+		if ( pShield && ( m_afButtonPressed & IN_ATTACK3 ) )
+		{
+			pShield->DoSpecialAction( this );
+		}
+	}
+
 	// cache buttons because some weapons' ItemPostFrame could change m_nButtons against other weapons
 	int nButtons = m_nButtons;
 
@@ -12355,19 +12365,11 @@ bool CTFPlayer::DoClassSpecialSkill( void )
 	case TF_CLASS_DEMOMAN:
 		if ( !m_Shared.HasPasstimeBall() )
 		{
+			// Mouse2 detonates stickies. Shield charge is mouse3.
 			CTFPipebombLauncher *pPipebombLauncher = static_cast<CTFPipebombLauncher*>( Weapon_OwnsThisID( TF_WEAPON_PIPEBOMBLAUNCHER ) );
 			if ( pPipebombLauncher )
 			{
 				pPipebombLauncher->SecondaryAttack();
-			}
-			else
-			{
-				CTFWearableDemoShield *pWearableShield = GetEquippedDemoShield( this );
-				if ( pWearableShield )
-				{
-					pWearableShield->DoSpecialAction( this );
-					break;
-				}
 			}
 		}
 		bDoSkill = true;
@@ -12397,15 +12399,11 @@ bool CTFPlayer::EndClassSpecialSkill( void )
 	{
 	case TF_CLASS_DEMOMAN:
 		{
-			CTFPipebombLauncher *pPipebombLauncher = static_cast<CTFPipebombLauncher*>( Weapon_OwnsThisID( TF_WEAPON_PIPEBOMBLAUNCHER ) );
-			if ( !pPipebombLauncher )
+			// Melee and passtime still end the charge. Mouse2 no longer does.
+			CTFWearableDemoShield *pWearableShield = GetEquippedDemoShield( this );
+			if ( pWearableShield )
 			{
-				CTFWearableDemoShield *pWearableShield = GetEquippedDemoShield( this );
-				if ( pWearableShield )
-				{
-					pWearableShield->EndSpecialAction( this );
-					break;
-				}
+				pWearableShield->EndSpecialAction( this );
 			}
 		}
 		break;

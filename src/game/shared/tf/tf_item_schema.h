@@ -284,6 +284,7 @@ private:
 	void RemapScoutExtraWeaponSlot( void );
 	void RemapSoldierBannerSlot( void );
 	void RemapPyroExtraWeaponSlots( void );
+	void RemapDemomanExtraSlots( void );
 
 	// The load-out slot that this item can be placed into.
 	int				m_iDefaultLoadoutSlot;

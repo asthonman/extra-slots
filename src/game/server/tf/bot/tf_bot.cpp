@@ -4532,7 +4532,8 @@ Action< CTFBot > *CTFBot::OpportunisticallyUseWeaponAbilities( void )
 
 		if ( bShouldCharge )
 		{
-			PressAltFireButton();
+			// Mouse3, same input as the Medic's projectile shield. Mouse2 stays sticky detonation.
+			PressSpecialFireButton();
 		}
 	}
 	// if I'm wearing parachute, check if I should activate my parachute

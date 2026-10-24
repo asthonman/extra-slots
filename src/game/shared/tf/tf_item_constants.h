@@ -91,6 +91,10 @@ enum loadout_positions_t
 	LOADOUT_POSITION_PYRO_JETPACK,
 	LOADOUT_POSITION_PYRO_GAS,
 
+	// Demoman. Key 4 is shields. Boots and the B.A.S.E. Jumper share the last weapon row.
+	LOADOUT_POSITION_DEMO_SHIELD,
+	LOADOUT_POSITION_DEMO_BOOTS,
+
 	CLASS_LOADOUT_POSITION_COUNT,
 };
 
@@ -170,7 +174,9 @@ inline bool IsExtraClassWeaponSlot( int iSlot )
 		|| iSlot == LOADOUT_POSITION_SOLDIER_PASSIVE
 		|| iSlot == LOADOUT_POSITION_PYRO_FLARE
 		|| iSlot == LOADOUT_POSITION_PYRO_JETPACK
-		|| iSlot == LOADOUT_POSITION_PYRO_GAS;
+		|| iSlot == LOADOUT_POSITION_PYRO_GAS
+		|| iSlot == LOADOUT_POSITION_DEMO_SHIELD
+		|| iSlot == LOADOUT_POSITION_DEMO_BOOTS;
 }
 
 inline bool IsValidPickupWeaponSlot( int iSlot )
@@ -184,7 +190,9 @@ inline bool IsValidPickupWeaponSlot( int iSlot )
 		|| iSlot == LOADOUT_POSITION_SOLDIER_PASSIVE
 		|| iSlot == LOADOUT_POSITION_PYRO_FLARE
 		|| iSlot == LOADOUT_POSITION_PYRO_JETPACK
-		|| iSlot == LOADOUT_POSITION_PYRO_GAS;
+		|| iSlot == LOADOUT_POSITION_PYRO_GAS
+		|| iSlot == LOADOUT_POSITION_DEMO_SHIELD
+		|| iSlot == LOADOUT_POSITION_DEMO_BOOTS;
 }
 
 

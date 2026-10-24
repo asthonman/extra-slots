@@ -46,6 +46,10 @@ int CTFParachute::GetSlot( void ) const
 	if ( pOwner && pOwner->IsPlayerClass( TF_CLASS_SOLDIER ) )
 		return 4;
 
+	// Demoman's B.A.S.E. Jumper shares the passive boots slot (key 5). He cannot select it.
+	if ( pOwner && pOwner->IsPlayerClass( TF_CLASS_DEMOMAN ) )
+		return 4;
+
 	return CBaseCombatWeapon::GetSlot();
 }
 

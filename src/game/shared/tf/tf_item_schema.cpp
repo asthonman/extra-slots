@@ -1081,6 +1081,7 @@ bool CTFItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString> 
 	// Soldier banners and passive secondaries leave secondary for key 4.
 	RemapSoldierBannerSlot();
 	RemapPyroExtraWeaponSlots();
+	RemapDemomanExtraSlots();
 
 #ifdef CLIENT_DLL
 	m_bHasDetailedIcon = pKVInitValues->GetBool( "has_detailed_icon" );
@@ -1124,6 +1125,7 @@ bool CTFItemDefinition::BInitFromTestItemKVs( int iNewDefIndex, KeyValues *pKVIt
 	RemapScoutExtraWeaponSlot();
 	RemapSoldierBannerSlot();
 	RemapPyroExtraWeaponSlots();
+	RemapDemomanExtraSlots();
 
 	KeyValues *pTauntKV = pKVItem->FindKey( "taunt" );
 	if ( pTauntKV )
@@ -1474,6 +1476,71 @@ void CTFItemDefinition::RemapPyroExtraWeaponSlots( void )
 }
 
 //-----------------------------------------------------------------------------
+// Purpose: Demoman shields leave secondary. Booties leave primary. The B.A.S.E.
+//			Jumper leaves secondary and shares the boots slot. Soldier's parachute
+//			slot is left alone.
+//-----------------------------------------------------------------------------
+void CTFItemDefinition::RemapDemomanExtraSlots( void )
+{
+	if ( !CanBeUsedByClass( TF_CLASS_DEMOMAN ) )
+		return;
+
+	const char *pszItemClass = GetItemClass();
+	const char *pszName = GetDefinitionName();
+	loadout_positions_t iNewSlot = LOADOUT_POSITION_INVALID;
+	int iOldSlot = LOADOUT_POSITION_INVALID;
+
+	if ( pszItemClass && !V_stricmp( pszItemClass, "tf_wearable_demoshield" ) )
+	{
+		iNewSlot = LOADOUT_POSITION_DEMO_SHIELD;
+		iOldSlot = LOADOUT_POSITION_SECONDARY;
+	}
+	else if ( pszItemClass && V_stristr( pszItemClass, "tf_weapon_parachute" ) )
+	{
+		iNewSlot = LOADOUT_POSITION_DEMO_BOOTS;
+		iOldSlot = LOADOUT_POSITION_SECONDARY;
+	}
+	else if ( pszName && ( V_stristr( pszName, "bootie" ) || V_stristr( pszName, "bootlegger" ) ) )
+	{
+		iNewSlot = LOADOUT_POSITION_DEMO_BOOTS;
+		iOldSlot = LOADOUT_POSITION_PRIMARY;
+	}
+	else if ( pszItemClass && !V_stricmp( pszItemClass, "tf_wearable" )
+		&& m_iLoadoutSlots[TF_CLASS_DEMOMAN] == LOADOUT_POSITION_PRIMARY
+		&& ( ItemHasAttributeClass( this, "add_maxhealth" ) || ItemHasAttributeClass( this, "add_maxhealth_nonbuffed" ) ) )
+	{
+		iNewSlot = LOADOUT_POSITION_DEMO_BOOTS;
+		iOldSlot = LOADOUT_POSITION_PRIMARY;
+	}
+
+	if ( iNewSlot == LOADOUT_POSITION_INVALID )
+		return;
+
+	if ( m_iLoadoutSlots[TF_CLASS_DEMOMAN] == iOldSlot
+		|| m_iLoadoutSlots[TF_CLASS_DEMOMAN] == LOADOUT_POSITION_INVALID )
+	{
+		m_iLoadoutSlots[TF_CLASS_DEMOMAN] = iNewSlot;
+	}
+
+	bool bDemoOnly = true;
+	for ( int i = 0; i < LOADOUT_COUNT; ++i )
+	{
+		if ( i == TF_CLASS_DEMOMAN )
+			continue;
+		if ( CanBeUsedByClass( i ) )
+		{
+			bDemoOnly = false;
+			break;
+		}
+	}
+
+	if ( bDemoOnly && m_iDefaultLoadoutSlot == iOldSlot )
+	{
+		m_iDefaultLoadoutSlot = iNewSlot;
+	}
+}
+
+//-----------------------------------------------------------------------------
 // Purpose: Return the load-out slot that this item must be placed into
 //-----------------------------------------------------------------------------
 int CTFItemDefinition::GetLoadoutSlot( int iLoadoutClass ) const
@@ -1780,6 +1847,8 @@ const char *g_szLoadoutStringsForDisplay[] =
 	"#LoadoutSlot_PyroFlare",		// LOADOUT_POSITION_PYRO_FLARE,
 	"#LoadoutSlot_PyroJetpack",		// LOADOUT_POSITION_PYRO_JETPACK,
 	"#LoadoutSlot_PyroGas",			// LOADOUT_POSITION_PYRO_GAS,
+	"#LoadoutSlot_DemoShield",		// LOADOUT_POSITION_DEMO_SHIELD,
+	"#LoadoutSlot_DemoBoots",		// LOADOUT_POSITION_DEMO_BOOTS,
 
 };
 COMPILE_TIME_ASSERT( ARRAYSIZE( g_szLoadoutStringsForDisplay ) == CLASS_LOADOUT_POSITION_COUNT );
@@ -1897,7 +1966,7 @@ bool CTFItemSchema::BInitSchema( KeyValues *pKVRawDefinition, CUtlVector<CUtlStr
 	SCHEMA_INIT_SUBSTEP( CEconItemSchema::BInitSchema( pKVRawDefinition, pVecErrors ) );
 
 	// Scout drink (slot 4) and throwable (slot 5) sit past the stock items_game range.
-	EnsureClassItemSlotValid( LOADOUT_POSITION_PYRO_GAS );
+	EnsureClassItemSlotValid( LOADOUT_POSITION_DEMO_BOOTS );
 
 	KeyValues *pKVMvmMaps = pKVRawDefinition->FindKey( "mvm_maps" );
 	SCHEMA_INIT_SUBSTEP( BInitMvmMissions( pKVMvmMaps, pVecErrors ) );
