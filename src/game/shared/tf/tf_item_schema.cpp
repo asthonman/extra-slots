@@ -1076,6 +1076,9 @@ bool CTFItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString> 
 	m_pszAdText = pKVInitValues->GetString( "ad_text", NULL );
 	m_pszAdResFile = pKVInitValues->GetString( "ad_res_file", "Resource/UI/econ/ItemAdDefault.res" );
 
+	// Bonk / Crit-a-Cola leave secondary for slot 4. Guillotine / Mad Milk leave it for slot 5.
+	RemapScoutExtraWeaponSlot();
+
 #ifdef CLIENT_DLL
 	m_bHasDetailedIcon = pKVInitValues->GetBool( "has_detailed_icon" );
 	m_bCanBackpackInspect = !pKVInitValues->GetBool( "disable_backpack_inspect" );
@@ -1114,6 +1117,8 @@ bool CTFItemDefinition::BInitFromTestItemKVs( int iNewDefIndex, KeyValues *pKVIt
 
 	InitPerClassStringArray( pKVItem->FindKey( "model_player_per_class" ), m_pszPlayerDisplayModel );
 	InitPerClassStringArray( pKVItem->FindKey( "model_player_per_class_alt" ), m_pszPlayerDisplayModelAlt );
+
+	RemapScoutExtraWeaponSlot();
 
 	KeyValues *pTauntKV = pKVItem->FindKey( "taunt" );
 	if ( pTauntKV )
@@ -1263,6 +1268,62 @@ const char *CTFStyleInfo::GetPlayerDisplayModel( int iClass, int iTeam ) const
 
 	// always return red team as default
 	return m_pszPlayerDisplayModel[0][iClass];
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Move Scout drinks and throwables off the secondary slot.
+//			Slot 4 (LOADOUT_POSITION_SCOUT_DRINK) is Bonk and Crit-a-Cola.
+//			Slot 5 (LOADOUT_POSITION_SCOUT_THROWABLE) is the Guillotine and Mad Milk.
+//-----------------------------------------------------------------------------
+void CTFItemDefinition::RemapScoutExtraWeaponSlot( void )
+{
+	const char *pszItemClass = GetItemClass();
+	if ( !pszItemClass || !pszItemClass[0] )
+		return;
+
+	loadout_positions_t iNewSlot = LOADOUT_POSITION_INVALID;
+	if ( !V_stricmp( pszItemClass, "tf_weapon_lunchbox_drink" ) )
+	{
+		iNewSlot = LOADOUT_POSITION_SCOUT_DRINK;
+	}
+	else if ( !V_stricmp( pszItemClass, "tf_weapon_jar_milk" ) || !V_stricmp( pszItemClass, "tf_weapon_cleaver" ) )
+	{
+		iNewSlot = LOADOUT_POSITION_SCOUT_THROWABLE;
+	}
+
+	if ( iNewSlot == LOADOUT_POSITION_INVALID )
+		return;
+
+	if ( !CanBeUsedByClass( TF_CLASS_SCOUT ) )
+		return;
+
+	// Pistols and every other secondary stay where they are.
+	if ( m_iLoadoutSlots[TF_CLASS_SCOUT] != LOADOUT_POSITION_SECONDARY
+		&& m_iDefaultLoadoutSlot != LOADOUT_POSITION_SECONDARY )
+		return;
+
+	if ( m_iLoadoutSlots[TF_CLASS_SCOUT] == LOADOUT_POSITION_SECONDARY
+		|| m_iLoadoutSlots[TF_CLASS_SCOUT] == LOADOUT_POSITION_INVALID )
+	{
+		m_iLoadoutSlots[TF_CLASS_SCOUT] = iNewSlot;
+	}
+
+	bool bScoutOnly = true;
+	for ( int i = 0; i < LOADOUT_COUNT; ++i )
+	{
+		if ( i == TF_CLASS_SCOUT )
+			continue;
+		if ( CanBeUsedByClass( i ) )
+		{
+			bScoutOnly = false;
+			break;
+		}
+	}
+
+	if ( bScoutOnly && m_iDefaultLoadoutSlot == LOADOUT_POSITION_SECONDARY )
+	{
+		m_iDefaultLoadoutSlot = iNewSlot;
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -1565,6 +1626,8 @@ const char *g_szLoadoutStringsForDisplay[] =
 	"#LoadoutSlot_Taunt6",		// LOADOUT_POSITION_TAUNT6,
 	"#LoadoutSlot_Taunt7",		// LOADOUT_POSITION_TAUNT7,
 	"#LoadoutSlot_Taunt8",		// LOADOUT_POSITION_TAUNT8,
+	"#LoadoutSlot_ScoutDrink",		// LOADOUT_POSITION_SCOUT_DRINK,
+	"#LoadoutSlot_ScoutThrowable",	// LOADOUT_POSITION_SCOUT_THROWABLE,
 
 };
 COMPILE_TIME_ASSERT( ARRAYSIZE( g_szLoadoutStringsForDisplay ) == CLASS_LOADOUT_POSITION_COUNT );
@@ -1680,6 +1743,9 @@ bool CTFItemSchema::BInitSchema( KeyValues *pKVRawDefinition, CUtlVector<CUtlStr
 	}
 	
 	SCHEMA_INIT_SUBSTEP( CEconItemSchema::BInitSchema( pKVRawDefinition, pVecErrors ) );
+
+	// Scout drink (slot 4) and throwable (slot 5) sit past the stock items_game range.
+	EnsureClassItemSlotValid( LOADOUT_POSITION_SCOUT_THROWABLE );
 
 	KeyValues *pKVMvmMaps = pKVRawDefinition->FindKey( "mvm_maps" );
 	SCHEMA_INIT_SUBSTEP( BInitMvmMissions( pKVMvmMaps, pVecErrors ) );

@@ -2589,6 +2589,11 @@ public:
 		return eType == EQUIP_TYPE_ACCOUNT ? unSlot >= m_unFirstValidAccountItemSlot && unSlot <= m_unLastValidAccountItemSlot
 										   : unSlot >= m_unFirstValidClassItemSlot && unSlot <= m_unLastValidClassItemSlot; 
 	}
+	void				EnsureClassItemSlotValid( equipped_slot_t unSlot )
+	{
+		if ( m_unLastValidClassItemSlot < unSlot )
+			m_unLastValidClassItemSlot = unSlot;
+	}
 
 	enum { kMaxItemPresetCount = 4 };
 	uint32				GetNumAllowedItemPresets() const					{ return kMaxItemPresetCount; }

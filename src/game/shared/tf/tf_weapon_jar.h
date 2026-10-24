@@ -91,6 +91,7 @@ public:
 	DECLARE_NETWORKCLASS(); 
 
 	virtual int			GetWeaponID( void ) const			{ return TF_WEAPON_JAR_MILK; }
+	virtual int			GetSlot( void ) const OVERRIDE		{ return 4; }	// key 5
 
 #ifdef GAME_DLL
 	virtual CTFProjectile_Jar	*CreateJarProjectile( const Vector &position, const QAngle &angles, const Vector &velocity, 
@@ -111,6 +112,7 @@ public:
 	DECLARE_NETWORKCLASS(); 
 
 	virtual int			GetWeaponID( void ) const			{ return TF_WEAPON_CLEAVER; }
+	virtual int			GetSlot( void ) const OVERRIDE		{ return 4; }	// key 5, shared with Mad Milk
 	virtual float		GetProjectileSpeed( void );
 
 	virtual void		SecondaryAttack( void );

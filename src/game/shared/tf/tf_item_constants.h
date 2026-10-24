@@ -77,6 +77,10 @@ enum loadout_positions_t
 	LOADOUT_POSITION_TAUNT7,
 	LOADOUT_POSITION_TAUNT8,
 
+	// Scout weapon slots. Appended so existing loadout indices stay stable.
+	// Key 4 is the drink (Bonk / Crit-a-Cola). Key 5 is the throwable (Guillotine / Mad Milk).
+	LOADOUT_POSITION_SCOUT_DRINK,
+	LOADOUT_POSITION_SCOUT_THROWABLE,
 
 	CLASS_LOADOUT_POSITION_COUNT,
 };
@@ -153,7 +157,9 @@ inline bool IsValidPickupWeaponSlot( int iSlot )
 {
 	return iSlot == LOADOUT_POSITION_PRIMARY
 		|| iSlot == LOADOUT_POSITION_SECONDARY
-		|| iSlot == LOADOUT_POSITION_MELEE;
+		|| iSlot == LOADOUT_POSITION_MELEE
+		|| iSlot == LOADOUT_POSITION_SCOUT_DRINK
+		|| iSlot == LOADOUT_POSITION_SCOUT_THROWABLE;
 }
 
 

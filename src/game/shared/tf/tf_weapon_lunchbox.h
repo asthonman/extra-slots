@@ -104,6 +104,8 @@ public:
 
 	CTFLunchBox_Drink();
 
+	virtual int			GetSlot( void ) const OVERRIDE { return 3; }	// key 4, with the pistol left on key 2
+
 	bool				AllowTaunts( void ) { return false; }
 
 	virtual bool		DropAllowed( void ) { return false; }

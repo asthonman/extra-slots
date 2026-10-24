@@ -281,6 +281,7 @@ public:
 
 private:
 	void InternalInitialize();
+	void RemapScoutExtraWeaponSlot( void );
 
 	// The load-out slot that this item can be placed into.
 	int				m_iDefaultLoadoutSlot;

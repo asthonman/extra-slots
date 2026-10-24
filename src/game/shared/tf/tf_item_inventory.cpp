@@ -907,6 +907,70 @@ void CTFPlayerInventory::UpdateRealTFLoadoutItems()
 	V_memcpy( m_RealTFLoadoutItems, m_LoadoutItems, sizeof( itemid_t ) * ARRAYSIZE( m_RealTFLoadoutItems ) * ARRAYSIZE( m_RealTFLoadoutItems[0] ) );
 }
 
+//-----------------------------------------------------------------------------
+// Purpose: Pull Bonk / Crit-a-Cola onto slot 4 and Guillotine / Mad Milk onto slot 5
+//			if a saved local loadout still has them sitting in secondary.
+//-----------------------------------------------------------------------------
+void CTFPlayerInventory::NormalizeScoutExtraSlots()
+{
+	const int iClass = TF_CLASS_SCOUT;
+	const int nPresets = static_cast<int>( GetItemSchema()->GetNumAllowedItemPresets() );
+	bool bChanged = false;
+
+	for ( int iPreset = 0; iPreset < nPresets; ++iPreset )
+	{
+		for ( int iSlot = 0; iSlot < CLASS_LOADOUT_POSITION_COUNT; ++iSlot )
+		{
+			const itemid_t uItemId = m_PresetItems[iPreset][iClass][iSlot];
+			if ( uItemId == 0 )
+				continue;
+
+			CEconItemView *pItem = GetInventoryItemByItemID( uItemId );
+			if ( !pItem || !pItem->GetStaticData() )
+				continue;
+
+			const int iDesired = pItem->GetStaticData()->GetLoadoutSlot( iClass );
+			if ( iDesired != LOADOUT_POSITION_SCOUT_DRINK && iDesired != LOADOUT_POSITION_SCOUT_THROWABLE )
+				continue;
+			if ( iDesired == iSlot )
+				continue;
+
+			if ( m_PresetItems[iPreset][iClass][iDesired] == 0 )
+			{
+				m_PresetItems[iPreset][iClass][iDesired] = uItemId;
+			}
+			m_PresetItems[iPreset][iClass][iSlot] = 0;
+			bChanged = true;
+
+			if ( iPreset == m_ActivePreset[iClass] )
+			{
+				if ( m_LoadoutItems[iClass][iDesired] == 0 )
+				{
+					m_LoadoutItems[iClass][iDesired] = uItemId;
+				}
+				if ( m_LoadoutItems[iClass][iSlot] == uItemId )
+				{
+					m_LoadoutItems[iClass][iSlot] = 0;
+				}
+
+				if ( pItem->GetSOCData() )
+				{
+					pItem->GetSOCData()->UnequipFromClass( iClass );
+					if ( m_LoadoutItems[iClass][iDesired] == uItemId )
+					{
+						pItem->GetSOCData()->Equip( iClass, iDesired );
+					}
+				}
+			}
+		}
+	}
+
+	if ( bChanged )
+	{
+		SaveLocalLoadout();
+	}
+}
+
 void CTFPlayerInventory::LoadLocalLoadout()
 {
 	if (GetOwner() != steamapicontext->SteamUser()->GetSteamID())
@@ -973,6 +1037,8 @@ void CTFPlayerInventory::LoadLocalLoadout()
 	}
 
 	pLoadoutKV->deleteThis();
+
+	NormalizeScoutExtraSlots();
 
 	GTFGCClientSystem()->LocalInventoryChanged();
 }
