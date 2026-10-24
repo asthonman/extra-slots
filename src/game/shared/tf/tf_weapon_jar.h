@@ -48,6 +48,7 @@ public:
 
 	CTFJar();
 	virtual int			GetWeaponID( void ) const			{ return TF_WEAPON_JAR; }
+	virtual int			GetSlot( void ) const OVERRIDE		{ return 4; }	// key 5. SMG stays on key 2.
 	virtual float		GetProjectileSpeed( void );
 	virtual void		PrimaryAttack( void );
 

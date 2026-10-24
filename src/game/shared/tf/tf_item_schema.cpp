@@ -1084,6 +1084,7 @@ bool CTFItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString> 
 	RemapDemomanExtraSlots();
 	RemapHeavyLunchboxSlot();
 	RemapEngineerToolSlot();
+	RemapSniperExtraSlots();
 
 #ifdef CLIENT_DLL
 	m_bHasDetailedIcon = pKVInitValues->GetBool( "has_detailed_icon" );
@@ -1130,6 +1131,7 @@ bool CTFItemDefinition::BInitFromTestItemKVs( int iNewDefIndex, KeyValues *pKVIt
 	RemapDemomanExtraSlots();
 	RemapHeavyLunchboxSlot();
 	RemapEngineerToolSlot();
+	RemapSniperExtraSlots();
 
 	KeyValues *pTauntKV = pKVItem->FindKey( "taunt" );
 	if ( pTauntKV )
@@ -1629,6 +1631,68 @@ void CTFItemDefinition::RemapEngineerToolSlot( void )
 }
 
 //-----------------------------------------------------------------------------
+// Purpose: Sniper bow leaves primary. Jarate and backpacks leave secondary.
+//			The rifle and SMG stay put. Mad Milk and the Gas Passer are other jar classes.
+//-----------------------------------------------------------------------------
+void CTFItemDefinition::RemapSniperExtraSlots( void )
+{
+	if ( !CanBeUsedByClass( TF_CLASS_SNIPER ) )
+		return;
+
+	const char *pszItemClass = GetItemClass();
+	const char *pszName = GetDefinitionName();
+	loadout_positions_t iNewSlot = LOADOUT_POSITION_INVALID;
+	int iOldSlot = LOADOUT_POSITION_INVALID;
+
+	if ( pszItemClass && !V_stricmp( pszItemClass, "tf_weapon_compound_bow" ) )
+	{
+		iNewSlot = LOADOUT_POSITION_SNIPER_BOW;
+		iOldSlot = LOADOUT_POSITION_PRIMARY;
+	}
+	else if ( pszItemClass && !V_stricmp( pszItemClass, "tf_weapon_jar" ) )
+	{
+		iNewSlot = LOADOUT_POSITION_SNIPER_JAR;
+		iOldSlot = LOADOUT_POSITION_SECONDARY;
+	}
+	else if ( pszItemClass && !V_stricmp( pszItemClass, "tf_wearable_razorback" ) )
+	{
+		iNewSlot = LOADOUT_POSITION_SNIPER_BACKPACK;
+		iOldSlot = LOADOUT_POSITION_SECONDARY;
+	}
+	else if ( pszName && ( V_stristr( pszName, "danger shield" ) || V_stristr( pszName, "cozy camper" ) || V_stristr( pszName, "razorback" ) ) )
+	{
+		iNewSlot = LOADOUT_POSITION_SNIPER_BACKPACK;
+		iOldSlot = LOADOUT_POSITION_SECONDARY;
+	}
+
+	if ( iNewSlot == LOADOUT_POSITION_INVALID )
+		return;
+
+	if ( m_iLoadoutSlots[TF_CLASS_SNIPER] == iOldSlot
+		|| m_iLoadoutSlots[TF_CLASS_SNIPER] == LOADOUT_POSITION_INVALID )
+	{
+		m_iLoadoutSlots[TF_CLASS_SNIPER] = iNewSlot;
+	}
+
+	bool bSniperOnly = true;
+	for ( int i = 0; i < LOADOUT_COUNT; ++i )
+	{
+		if ( i == TF_CLASS_SNIPER )
+			continue;
+		if ( CanBeUsedByClass( i ) )
+		{
+			bSniperOnly = false;
+			break;
+		}
+	}
+
+	if ( bSniperOnly && m_iDefaultLoadoutSlot == iOldSlot )
+	{
+		m_iDefaultLoadoutSlot = iNewSlot;
+	}
+}
+
+//-----------------------------------------------------------------------------
 // Purpose: Return the load-out slot that this item must be placed into
 //-----------------------------------------------------------------------------
 int CTFItemDefinition::GetLoadoutSlot( int iLoadoutClass ) const
@@ -1939,6 +2003,9 @@ const char *g_szLoadoutStringsForDisplay[] =
 	"#LoadoutSlot_DemoBoots",		// LOADOUT_POSITION_DEMO_BOOTS,
 	"#LoadoutSlot_HeavyLunchbox",	// LOADOUT_POSITION_HEAVY_LUNCHBOX,
 	"#LoadoutSlot_EngineerTool",	// LOADOUT_POSITION_ENGINEER_TOOL,
+	"#LoadoutSlot_SniperBow",		// LOADOUT_POSITION_SNIPER_BOW,
+	"#LoadoutSlot_SniperJar",		// LOADOUT_POSITION_SNIPER_JAR,
+	"#LoadoutSlot_SniperBackpack",	// LOADOUT_POSITION_SNIPER_BACKPACK,
 
 };
 COMPILE_TIME_ASSERT( ARRAYSIZE( g_szLoadoutStringsForDisplay ) == CLASS_LOADOUT_POSITION_COUNT );
@@ -2056,7 +2123,7 @@ bool CTFItemSchema::BInitSchema( KeyValues *pKVRawDefinition, CUtlVector<CUtlStr
 	SCHEMA_INIT_SUBSTEP( CEconItemSchema::BInitSchema( pKVRawDefinition, pVecErrors ) );
 
 	// Scout drink (slot 4) and throwable (slot 5) sit past the stock items_game range.
-	EnsureClassItemSlotValid( LOADOUT_POSITION_ENGINEER_TOOL );
+	EnsureClassItemSlotValid( LOADOUT_POSITION_SNIPER_BACKPACK );
 
 	KeyValues *pKVMvmMaps = pKVRawDefinition->FindKey( "mvm_maps" );
 	SCHEMA_INIT_SUBSTEP( BInitMvmMissions( pKVMvmMaps, pVecErrors ) );

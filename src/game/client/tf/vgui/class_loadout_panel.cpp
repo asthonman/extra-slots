@@ -136,6 +136,9 @@ const LoadoutPanelPositioningInstance g_DefaultLoadoutPanelPositioning =
 		0,	// LOADOUT_POSITION_DEMO_BOOTS,
 		0,	// LOADOUT_POSITION_HEAVY_LUNCHBOX,
 		0,	// LOADOUT_POSITION_ENGINEER_TOOL,
+		0,	// LOADOUT_POSITION_SNIPER_BOW,
+		0,	// LOADOUT_POSITION_SNIPER_JAR,
+		0,	// LOADOUT_POSITION_SNIPER_BACKPACK,
 
 	}
 };
@@ -173,6 +176,9 @@ const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Scout =
 		0,	// LOADOUT_POSITION_DEMO_BOOTS,
 		0,	// LOADOUT_POSITION_HEAVY_LUNCHBOX,
 		0,	// LOADOUT_POSITION_ENGINEER_TOOL,
+		0,	// LOADOUT_POSITION_SNIPER_BOW,
+		0,	// LOADOUT_POSITION_SNIPER_JAR,
+		0,	// LOADOUT_POSITION_SNIPER_BACKPACK,
 	}
 };
 
@@ -209,6 +215,9 @@ const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Spy =
 		0,	// LOADOUT_POSITION_DEMO_BOOTS,
 		0,	// LOADOUT_POSITION_HEAVY_LUNCHBOX,
 		0,	// LOADOUT_POSITION_ENGINEER_TOOL,
+		0,	// LOADOUT_POSITION_SNIPER_BOW,
+		0,	// LOADOUT_POSITION_SNIPER_JAR,
+		0,	// LOADOUT_POSITION_SNIPER_BACKPACK,
 	}
 };
 
@@ -245,6 +254,9 @@ const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Engineer =
 		0,	// LOADOUT_POSITION_DEMO_BOOTS,
 		0,	// LOADOUT_POSITION_HEAVY_LUNCHBOX,
 		6,	// LOADOUT_POSITION_ENGINEER_TOOL,	// key 6
+		0,	// LOADOUT_POSITION_SNIPER_BOW,
+		0,	// LOADOUT_POSITION_SNIPER_JAR,
+		0,	// LOADOUT_POSITION_SNIPER_BACKPACK,
 	}
 };
 
@@ -281,6 +293,9 @@ const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Soldier =
 		0,	// LOADOUT_POSITION_DEMO_BOOTS,
 		0,	// LOADOUT_POSITION_HEAVY_LUNCHBOX,
 		0,	// LOADOUT_POSITION_ENGINEER_TOOL,
+		0,	// LOADOUT_POSITION_SNIPER_BOW,
+		0,	// LOADOUT_POSITION_SNIPER_JAR,
+		0,	// LOADOUT_POSITION_SNIPER_BACKPACK,
 	}
 };
 
@@ -317,6 +332,9 @@ const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Pyro =
 		0,	// LOADOUT_POSITION_DEMO_BOOTS,
 		0,	// LOADOUT_POSITION_HEAVY_LUNCHBOX,
 		0,	// LOADOUT_POSITION_ENGINEER_TOOL,
+		0,	// LOADOUT_POSITION_SNIPER_BOW,
+		0,	// LOADOUT_POSITION_SNIPER_JAR,
+		0,	// LOADOUT_POSITION_SNIPER_BACKPACK,
 	}
 };
 
@@ -353,6 +371,9 @@ const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Demoman =
 		5,	// LOADOUT_POSITION_DEMO_BOOTS,		// end of the weapon column
 		0,	// LOADOUT_POSITION_HEAVY_LUNCHBOX,
 		0,	// LOADOUT_POSITION_ENGINEER_TOOL,
+		0,	// LOADOUT_POSITION_SNIPER_BOW,
+		0,	// LOADOUT_POSITION_SNIPER_JAR,
+		0,	// LOADOUT_POSITION_SNIPER_BACKPACK,
 	}
 };
 
@@ -389,6 +410,48 @@ const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Heavy =
 		0,	// LOADOUT_POSITION_DEMO_BOOTS,
 		4,	// LOADOUT_POSITION_HEAVY_LUNCHBOX,	// key 4
 		0,	// LOADOUT_POSITION_ENGINEER_TOOL,
+		0,	// LOADOUT_POSITION_SNIPER_BOW,
+		0,	// LOADOUT_POSITION_SNIPER_JAR,
+		0,	// LOADOUT_POSITION_SNIPER_BACKPACK,
+	}
+};
+
+const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Sniper =
+{
+	{
+		1,	// LOADOUT_POSITION_PRIMARY = 0,
+		2,	// LOADOUT_POSITION_SECONDARY,
+		3,	// LOADOUT_POSITION_MELEE,
+		0,	// LOADOUT_POSITION_UTILITY,  // STAGING ONLY
+		0,	// LOADOUT_POSITION_BUILDING,
+		0,	// LOADOUT_POSITION_PDA,
+		0,	// LOADOUT_POSITION_PDA2,
+		7,	// LOADOUT_POSITION_HEAD,
+		8,	// LOADOUT_POSITION_MISC,
+		10,	// LOADOUT_POSITION_ACTION,
+		9,	// LOADOUT_POSITION_MISC2,
+		11,	// LOADOUT_POSITION_TAUNT,
+		12,	// LOADOUT_POSITION_TAUNT2,
+		13,	// LOADOUT_POSITION_TAUNT3,
+		14,	// LOADOUT_POSITION_TAUNT4,
+		15,	// LOADOUT_POSITION_TAUNT5,
+		16,	// LOADOUT_POSITION_TAUNT6,
+		17,	// LOADOUT_POSITION_TAUNT7,
+		18,	// LOADOUT_POSITION_TAUNT8,
+		0,	// LOADOUT_POSITION_SCOUT_DRINK,
+		0,	// LOADOUT_POSITION_SCOUT_THROWABLE,
+		0,	// LOADOUT_POSITION_SOLDIER_BANNER,
+		0,	// LOADOUT_POSITION_SOLDIER_PASSIVE,
+		0,	// LOADOUT_POSITION_PYRO_FLARE,
+		0,	// LOADOUT_POSITION_PYRO_JETPACK,
+		0,	// LOADOUT_POSITION_PYRO_GAS,
+		0,	// LOADOUT_POSITION_DEMO_SHIELD,
+		0,	// LOADOUT_POSITION_DEMO_BOOTS,
+		0,	// LOADOUT_POSITION_HEAVY_LUNCHBOX,
+		0,	// LOADOUT_POSITION_ENGINEER_TOOL,
+		4,	// LOADOUT_POSITION_SNIPER_BOW,			// key 4
+		5,	// LOADOUT_POSITION_SNIPER_JAR,			// key 5
+		6,	// LOADOUT_POSITION_SNIPER_BACKPACK,	// key 6
 	}
 };
 
@@ -396,7 +459,7 @@ const LoadoutPanelPositioningInstance *g_VisibleLoadoutSlotsPerClass[] =
 {
 	&g_DefaultLoadoutPanelPositioning,			// TF_CLASS_UNDEFINED
 	&g_LoadoutPanelPositioning_Scout,			// TF_CLASS_SCOUT
-	&g_DefaultLoadoutPanelPositioning,			// TF_CLASS_SNIPER
+	&g_LoadoutPanelPositioning_Sniper,			// TF_CLASS_SNIPER
 	&g_LoadoutPanelPositioning_Soldier,			// TF_CLASS_SOLDIER
 	&g_LoadoutPanelPositioning_Demoman,			// TF_CLASS_DEMOMAN
 	&g_DefaultLoadoutPanelPositioning,			// TF_CLASS_MEDIC
@@ -816,7 +879,7 @@ void CClassLoadoutPanel::PerformLayout( void )
 			int iColumnHeight = 4;
 			if ( !m_bInTauntLoadoutMode )
 			{
-				if ( m_iCurrentClassIndex == TF_CLASS_PYRO || m_iCurrentClassIndex == TF_CLASS_ENGINEER )
+				if ( m_iCurrentClassIndex == TF_CLASS_PYRO || m_iCurrentClassIndex == TF_CLASS_ENGINEER || m_iCurrentClassIndex == TF_CLASS_SNIPER )
 					iColumnHeight = 6;
 				else if ( m_iCurrentClassIndex == TF_CLASS_SCOUT || m_iCurrentClassIndex == TF_CLASS_SOLDIER || m_iCurrentClassIndex == TF_CLASS_DEMOMAN )
 					iColumnHeight = 5;
@@ -1466,7 +1529,7 @@ void CClassLoadoutPanel::OnCommand( const char *command )
 					m_pItemOptionPanel->SetVisible( true );
 					int iButtonPos = g_VisibleLoadoutSlotsPerClass[m_iCurrentClassIndex]->m_iPos[ iSlot ] - 1;
 					int iColumnHeight = 4;
-					if ( m_iCurrentClassIndex == TF_CLASS_PYRO || m_iCurrentClassIndex == TF_CLASS_ENGINEER )
+					if ( m_iCurrentClassIndex == TF_CLASS_PYRO || m_iCurrentClassIndex == TF_CLASS_ENGINEER || m_iCurrentClassIndex == TF_CLASS_SNIPER )
 						iColumnHeight = 6;
 					else if ( m_iCurrentClassIndex == TF_CLASS_SCOUT || m_iCurrentClassIndex == TF_CLASS_SOLDIER || m_iCurrentClassIndex == TF_CLASS_DEMOMAN )
 						iColumnHeight = 5;

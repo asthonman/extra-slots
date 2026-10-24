@@ -44,6 +44,7 @@ public:
 	virtual void	WeaponReset( void );
 
 	virtual int		GetWeaponID( void ) const			{ return TF_WEAPON_COMPOUND_BOW; }
+	virtual int		GetSlot( void ) const OVERRIDE		{ return 3; }	// key 4. Rifle stays on key 1.
 
 	virtual void	PrimaryAttack();
 	virtual void	LaunchGrenade( void );

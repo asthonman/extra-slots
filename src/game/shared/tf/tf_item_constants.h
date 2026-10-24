@@ -101,6 +101,11 @@ enum loadout_positions_t
 	// Engineer key 6. Wrangler is stock. Giger Counter and Short Circuit replace it.
 	LOADOUT_POSITION_ENGINEER_TOOL,
 
+	// Sniper. Key 4 is the Huntsman. Key 5 is Jarate. Key 6 is backpacks.
+	LOADOUT_POSITION_SNIPER_BOW,
+	LOADOUT_POSITION_SNIPER_JAR,
+	LOADOUT_POSITION_SNIPER_BACKPACK,
+
 	CLASS_LOADOUT_POSITION_COUNT,
 };
 
@@ -184,7 +189,10 @@ inline bool IsExtraClassWeaponSlot( int iSlot )
 		|| iSlot == LOADOUT_POSITION_DEMO_SHIELD
 		|| iSlot == LOADOUT_POSITION_DEMO_BOOTS
 		|| iSlot == LOADOUT_POSITION_HEAVY_LUNCHBOX
-		|| iSlot == LOADOUT_POSITION_ENGINEER_TOOL;
+		|| iSlot == LOADOUT_POSITION_ENGINEER_TOOL
+		|| iSlot == LOADOUT_POSITION_SNIPER_BOW
+		|| iSlot == LOADOUT_POSITION_SNIPER_JAR
+		|| iSlot == LOADOUT_POSITION_SNIPER_BACKPACK;
 }
 
 inline bool IsValidPickupWeaponSlot( int iSlot )
@@ -202,7 +210,10 @@ inline bool IsValidPickupWeaponSlot( int iSlot )
 		|| iSlot == LOADOUT_POSITION_DEMO_SHIELD
 		|| iSlot == LOADOUT_POSITION_DEMO_BOOTS
 		|| iSlot == LOADOUT_POSITION_HEAVY_LUNCHBOX
-		|| iSlot == LOADOUT_POSITION_ENGINEER_TOOL;
+		|| iSlot == LOADOUT_POSITION_ENGINEER_TOOL
+		|| iSlot == LOADOUT_POSITION_SNIPER_BOW
+		|| iSlot == LOADOUT_POSITION_SNIPER_JAR
+		|| iSlot == LOADOUT_POSITION_SNIPER_BACKPACK;
 }
 
 
