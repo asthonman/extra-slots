@@ -37,6 +37,18 @@ CTFParachute::CTFParachute()
 #endif // CLIENT_DLL
 }
 
+//-----------------------------------------------------------------------------
+// Soldier's B.A.S.E. Jumper shares key 4 with banners. Demoman keeps secondary.
+//-----------------------------------------------------------------------------
+int CTFParachute::GetSlot( void ) const
+{
+	const CTFPlayer *pOwner = ToTFPlayer( GetPlayerOwner() );
+	if ( pOwner && pOwner->IsPlayerClass( TF_CLASS_SOLDIER ) )
+		return 3;
+
+	return CBaseCombatWeapon::GetSlot();
+}
+
 
 //-----------------------------------------------------------------------------
 void CTFParachute::CreateBanner()

@@ -908,57 +908,56 @@ void CTFPlayerInventory::UpdateRealTFLoadoutItems()
 }
 
 //-----------------------------------------------------------------------------
-// Purpose: Pull Bonk / Crit-a-Cola onto slot 4 and Guillotine / Mad Milk onto slot 5
-//			if a saved local loadout still has them sitting in secondary.
+// Purpose: Move items that now belong in an extra class slot out of secondary.
 //-----------------------------------------------------------------------------
-void CTFPlayerInventory::NormalizeScoutExtraSlots()
+void CTFPlayerInventory::NormalizeExtraLoadoutSlots()
 {
-	const int iClass = TF_CLASS_SCOUT;
 	const int nPresets = static_cast<int>( GetItemSchema()->GetNumAllowedItemPresets() );
 	bool bChanged = false;
 
-	for ( int iPreset = 0; iPreset < nPresets; ++iPreset )
+	for ( int iClass = TF_FIRST_NORMAL_CLASS; iClass < TF_LAST_NORMAL_CLASS; ++iClass )
 	{
-		for ( int iSlot = 0; iSlot < CLASS_LOADOUT_POSITION_COUNT; ++iSlot )
+		for ( int iPreset = 0; iPreset < nPresets; ++iPreset )
 		{
-			const itemid_t uItemId = m_PresetItems[iPreset][iClass][iSlot];
-			if ( uItemId == 0 )
-				continue;
-
-			CEconItemView *pItem = GetInventoryItemByItemID( uItemId );
-			if ( !pItem || !pItem->GetStaticData() )
-				continue;
-
-			const int iDesired = pItem->GetStaticData()->GetLoadoutSlot( iClass );
-			if ( iDesired != LOADOUT_POSITION_SCOUT_DRINK && iDesired != LOADOUT_POSITION_SCOUT_THROWABLE )
-				continue;
-			if ( iDesired == iSlot )
-				continue;
-
-			if ( m_PresetItems[iPreset][iClass][iDesired] == 0 )
+			for ( int iSlot = 0; iSlot < CLASS_LOADOUT_POSITION_COUNT; ++iSlot )
 			{
-				m_PresetItems[iPreset][iClass][iDesired] = uItemId;
-			}
-			m_PresetItems[iPreset][iClass][iSlot] = 0;
-			bChanged = true;
+				const itemid_t uItemId = m_PresetItems[iPreset][iClass][iSlot];
+				if ( uItemId == 0 )
+					continue;
 
-			if ( iPreset == m_ActivePreset[iClass] )
-			{
-				if ( m_LoadoutItems[iClass][iDesired] == 0 )
-				{
-					m_LoadoutItems[iClass][iDesired] = uItemId;
-				}
-				if ( m_LoadoutItems[iClass][iSlot] == uItemId )
-				{
-					m_LoadoutItems[iClass][iSlot] = 0;
-				}
+				CEconItemView *pItem = GetInventoryItemByItemID( uItemId );
+				if ( !pItem || !pItem->GetStaticData() )
+					continue;
 
-				if ( pItem->GetSOCData() )
+				const int iDesired = pItem->GetStaticData()->GetLoadoutSlot( iClass );
+				if ( !IsExtraClassWeaponSlot( iDesired ) || iDesired == iSlot )
+					continue;
+
+				if ( m_PresetItems[iPreset][iClass][iDesired] == 0 )
 				{
-					pItem->GetSOCData()->UnequipFromClass( iClass );
-					if ( m_LoadoutItems[iClass][iDesired] == uItemId )
+					m_PresetItems[iPreset][iClass][iDesired] = uItemId;
+				}
+				m_PresetItems[iPreset][iClass][iSlot] = 0;
+				bChanged = true;
+
+				if ( iPreset == m_ActivePreset[iClass] )
+				{
+					if ( m_LoadoutItems[iClass][iDesired] == 0 )
 					{
-						pItem->GetSOCData()->Equip( iClass, iDesired );
+						m_LoadoutItems[iClass][iDesired] = uItemId;
+					}
+					if ( m_LoadoutItems[iClass][iSlot] == uItemId )
+					{
+						m_LoadoutItems[iClass][iSlot] = 0;
+					}
+
+					if ( pItem->GetSOCData() )
+					{
+						pItem->GetSOCData()->UnequipFromClass( iClass );
+						if ( m_LoadoutItems[iClass][iDesired] == uItemId )
+						{
+							pItem->GetSOCData()->Equip( iClass, iDesired );
+						}
 					}
 				}
 			}
@@ -1038,7 +1037,7 @@ void CTFPlayerInventory::LoadLocalLoadout()
 
 	pLoadoutKV->deleteThis();
 
-	NormalizeScoutExtraSlots();
+	NormalizeExtraLoadoutSlots();
 
 	GTFGCClientSystem()->LocalInventoryChanged();
 }

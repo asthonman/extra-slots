@@ -40,6 +40,7 @@ static const char *s_loadout_position_names[] =
 
 	"LOADOUT_POSITION_SCOUT_DRINK",
 	"LOADOUT_POSITION_SCOUT_THROWABLE",
+	"LOADOUT_POSITION_SOLDIER_BANNER",
 };
 COMPILE_TIME_ASSERT( ARRAYSIZE( s_loadout_position_names ) == CLASS_LOADOUT_POSITION_COUNT );
 

@@ -35,6 +35,7 @@ public:
 	CTFParachute();
 
 	virtual int		GetWeaponID( void ) const			{ return TF_WEAPON_PARACHUTE; }
+	virtual int		GetSlot( void ) const OVERRIDE;
 
 	virtual bool	VisibleInWeaponSelection( void )				{ return false; }
 	virtual bool	CanBeSelected( void )							{ return false; }

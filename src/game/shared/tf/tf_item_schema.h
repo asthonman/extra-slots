@@ -282,6 +282,7 @@ public:
 private:
 	void InternalInitialize();
 	void RemapScoutExtraWeaponSlot( void );
+	void RemapSoldierBannerSlot( void );
 
 	// The load-out slot that this item can be placed into.
 	int				m_iDefaultLoadoutSlot;

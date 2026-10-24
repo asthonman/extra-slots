@@ -75,7 +75,7 @@ public:
 
 	void				LoadLocalLoadout();
 	void				SaveLocalLoadout( bool bReset=false, bool bDefaultToGC=false );
-	void				NormalizeScoutExtraSlots();
+	void				NormalizeExtraLoadoutSlots();
 	bool				EquipLocalPreset(equipped_class_t unClass, equipped_preset_t unPreset);
 	int					GetActiveLocalPreset(equipped_class_t unClass) { return m_ActivePreset[unClass]; }
 
