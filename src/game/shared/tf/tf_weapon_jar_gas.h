@@ -43,6 +43,7 @@ public:
 	DECLARE_NETWORKCLASS();
 
 	virtual int GetWeaponID( void ) const OVERRIDE { return TF_WEAPON_JAR_GAS; }
+	virtual int GetSlot( void ) const OVERRIDE { return 5; }	// key 6
 	virtual float GetProjectileSpeed( void ) OVERRIDE;
 	virtual void Equip( CBaseCombatCharacter* pOwner ) OVERRIDE;
 	virtual bool CanAttack() OVERRIDE;

@@ -129,6 +129,9 @@ const LoadoutPanelPositioningInstance g_DefaultLoadoutPanelPositioning =
 		0,	// LOADOUT_POSITION_SCOUT_THROWABLE,
 		0,	// LOADOUT_POSITION_SOLDIER_BANNER,
 		0,	// LOADOUT_POSITION_SOLDIER_PASSIVE,
+		0,	// LOADOUT_POSITION_PYRO_FLARE,
+		0,	// LOADOUT_POSITION_PYRO_JETPACK,
+		0,	// LOADOUT_POSITION_PYRO_GAS,
 
 	}
 };
@@ -159,6 +162,9 @@ const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Scout =
 		5,	// LOADOUT_POSITION_SCOUT_THROWABLE,	// key 5
 		0,	// LOADOUT_POSITION_SOLDIER_BANNER,
 		0,	// LOADOUT_POSITION_SOLDIER_PASSIVE,
+		0,	// LOADOUT_POSITION_PYRO_FLARE,
+		0,	// LOADOUT_POSITION_PYRO_JETPACK,
+		0,	// LOADOUT_POSITION_PYRO_GAS,
 	}
 };
 
@@ -188,6 +194,9 @@ const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Spy =
 		0,	// LOADOUT_POSITION_SCOUT_THROWABLE,
 		0,	// LOADOUT_POSITION_SOLDIER_BANNER,
 		0,	// LOADOUT_POSITION_SOLDIER_PASSIVE,
+		0,	// LOADOUT_POSITION_PYRO_FLARE,
+		0,	// LOADOUT_POSITION_PYRO_JETPACK,
+		0,	// LOADOUT_POSITION_PYRO_GAS,
 	}
 };
 
@@ -217,6 +226,9 @@ const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Engineer =
 		0,	// LOADOUT_POSITION_SCOUT_THROWABLE,
 		0,	// LOADOUT_POSITION_SOLDIER_BANNER,
 		0,	// LOADOUT_POSITION_SOLDIER_PASSIVE,
+		0,	// LOADOUT_POSITION_PYRO_FLARE,
+		0,	// LOADOUT_POSITION_PYRO_JETPACK,
+		0,	// LOADOUT_POSITION_PYRO_GAS,
 	}
 };
 
@@ -246,6 +258,41 @@ const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Soldier =
 		0,	// LOADOUT_POSITION_SCOUT_THROWABLE,
 		4,	// LOADOUT_POSITION_SOLDIER_BANNER,		// key 4
 		5,	// LOADOUT_POSITION_SOLDIER_PASSIVE,	// key 5
+		0,	// LOADOUT_POSITION_PYRO_FLARE,
+		0,	// LOADOUT_POSITION_PYRO_JETPACK,
+		0,	// LOADOUT_POSITION_PYRO_GAS,
+	}
+};
+
+const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Pyro =
+{
+	{
+		1,	// LOADOUT_POSITION_PRIMARY = 0,
+		2,	// LOADOUT_POSITION_SECONDARY,
+		3,	// LOADOUT_POSITION_MELEE,
+		0,	// LOADOUT_POSITION_UTILITY,  // STAGING ONLY
+		0,	// LOADOUT_POSITION_BUILDING,
+		0,	// LOADOUT_POSITION_PDA,
+		0,	// LOADOUT_POSITION_PDA2,
+		7,	// LOADOUT_POSITION_HEAD,
+		8,	// LOADOUT_POSITION_MISC,
+		10,	// LOADOUT_POSITION_ACTION,
+		9,	// LOADOUT_POSITION_MISC2,
+		11,	// LOADOUT_POSITION_TAUNT,
+		12,	// LOADOUT_POSITION_TAUNT2,
+		13,	// LOADOUT_POSITION_TAUNT3,
+		14,	// LOADOUT_POSITION_TAUNT4,
+		15,	// LOADOUT_POSITION_TAUNT5,
+		16,	// LOADOUT_POSITION_TAUNT6,
+		17,	// LOADOUT_POSITION_TAUNT7,
+		18,	// LOADOUT_POSITION_TAUNT8,
+		0,	// LOADOUT_POSITION_SCOUT_DRINK,
+		0,	// LOADOUT_POSITION_SCOUT_THROWABLE,
+		0,	// LOADOUT_POSITION_SOLDIER_BANNER,
+		0,	// LOADOUT_POSITION_SOLDIER_PASSIVE,
+		4,	// LOADOUT_POSITION_PYRO_FLARE,		// key 4
+		5,	// LOADOUT_POSITION_PYRO_JETPACK,	// key 5
+		6,	// LOADOUT_POSITION_PYRO_GAS,		// key 6
 	}
 };
 
@@ -258,7 +305,7 @@ const LoadoutPanelPositioningInstance *g_VisibleLoadoutSlotsPerClass[] =
 	&g_DefaultLoadoutPanelPositioning,			// TF_CLASS_DEMOMAN
 	&g_DefaultLoadoutPanelPositioning,			// TF_CLASS_MEDIC
 	&g_DefaultLoadoutPanelPositioning,			// TF_CLASS_HEAVYWEAPONS
-	&g_DefaultLoadoutPanelPositioning,			// TF_CLASS_PYRO
+	&g_LoadoutPanelPositioning_Pyro,			// TF_CLASS_PYRO
 	&g_LoadoutPanelPositioning_Spy,				// TF_CLASS_SPY
 	&g_LoadoutPanelPositioning_Engineer,		// TF_CLASS_ENGINEER
 };
@@ -670,7 +717,14 @@ void CClassLoadoutPanel::PerformLayout( void )
 			m_pItemModelPanels[i]->SetNoItemText( ItemSystem()->GetItemSchema()->GetLoadoutStringsForDisplay( EEquipType_t::EQUIP_TYPE_CLASS )[i] );
 
 			int iCenter = GetWide() * 0.5;
-			int iColumnHeight = ( !m_bInTauntLoadoutMode && ( m_iCurrentClassIndex == TF_CLASS_SCOUT || m_iCurrentClassIndex == TF_CLASS_SOLDIER ) ) ? 5 : 4;
+			int iColumnHeight = 4;
+			if ( !m_bInTauntLoadoutMode )
+			{
+				if ( m_iCurrentClassIndex == TF_CLASS_PYRO )
+					iColumnHeight = 6;
+				else if ( m_iCurrentClassIndex == TF_CLASS_SCOUT || m_iCurrentClassIndex == TF_CLASS_SOLDIER )
+					iColumnHeight = 5;
+			}
 			int iColumn = iButtonPos / iColumnHeight;
 			int iYButtonPos = iButtonPos % iColumnHeight;
 			
@@ -1314,13 +1368,15 @@ void CClassLoadoutPanel::OnCommand( const char *command )
 					// Set the options panel to have the data for this slot
 					m_pItemOptionPanel->SetItemSlot( (loadout_positions_t)iSlot, m_iCurrentClassIndex );
 					m_pItemOptionPanel->SetVisible( true );
-					// Figure out if this is on the left or right
+					int iButtonPos = g_VisibleLoadoutSlotsPerClass[m_iCurrentClassIndex]->m_iPos[ iSlot ] - 1;
 					int iColumnHeight = 4;
-					int iColumn = iSlot / iColumnHeight;
+					if ( m_iCurrentClassIndex == TF_CLASS_PYRO )
+						iColumnHeight = 6;
+					else if ( m_iCurrentClassIndex == TF_CLASS_SCOUT || m_iCurrentClassIndex == TF_CLASS_SOLDIER )
+						iColumnHeight = 5;
+					int iColumn = ( iButtonPos > 0 ) ? ( iButtonPos / iColumnHeight ) : 0;
 					PinCorner_e myCornerToPin = iColumn == 0 ? PIN_TOPLEFT : PIN_TOPRIGHT;
 					PinCorner_e siblingCornerPinTo = iColumn == 0 ? PIN_TOPRIGHT : PIN_TOPLEFT;
-					// Pin to the appropriate side
-					int iButtonPos = g_VisibleLoadoutSlotsPerClass[m_iCurrentClassIndex]->m_iPos[ iSlot ] - 1;
 					m_pItemOptionPanel->PinToSibling( m_vecItemOptionButtons[ iButtonPos ]->GetName(), myCornerToPin, siblingCornerPinTo );
 					m_pItemOptionPanel->UpdateItemOptionsUI();
 				}

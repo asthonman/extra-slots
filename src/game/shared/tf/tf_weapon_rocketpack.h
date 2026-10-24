@@ -30,6 +30,7 @@ public:
 	virtual void		WeaponReset( void ) OVERRIDE;
 	virtual void		Precache( void ) OVERRIDE;
 	virtual int			GetWeaponID( void ) const { return TF_WEAPON_ROCKETPACK; }
+	virtual int			GetSlot( void ) const OVERRIDE { return 4; }	// key 5
 	virtual void		ItemPostFrame( void ) OVERRIDE;
 	virtual void		PrimaryAttack( void ) OVERRIDE {}
 	virtual void		SecondaryAttack( void ) OVERRIDE {}

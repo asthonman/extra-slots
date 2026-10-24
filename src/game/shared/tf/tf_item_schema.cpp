@@ -1080,6 +1080,7 @@ bool CTFItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString> 
 	RemapScoutExtraWeaponSlot();
 	// Soldier banners and passive secondaries leave secondary for key 4.
 	RemapSoldierBannerSlot();
+	RemapPyroExtraWeaponSlots();
 
 #ifdef CLIENT_DLL
 	m_bHasDetailedIcon = pKVInitValues->GetBool( "has_detailed_icon" );
@@ -1122,6 +1123,7 @@ bool CTFItemDefinition::BInitFromTestItemKVs( int iNewDefIndex, KeyValues *pKVIt
 
 	RemapScoutExtraWeaponSlot();
 	RemapSoldierBannerSlot();
+	RemapPyroExtraWeaponSlots();
 
 	KeyValues *pTauntKV = pKVItem->FindKey( "taunt" );
 	if ( pTauntKV )
@@ -1410,6 +1412,62 @@ void CTFItemDefinition::RemapSoldierBannerSlot( void )
 	}
 
 	if ( bSoldierOnly && m_iDefaultLoadoutSlot == LOADOUT_POSITION_SECONDARY )
+	{
+		m_iDefaultLoadoutSlot = iNewSlot;
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Pyro key 4 is the flare guns (including the Manmelter). Key 5 is the
+//			Thermal Thruster. Key 6 is the Gas Passer. Shotgun stays secondary.
+//-----------------------------------------------------------------------------
+void CTFItemDefinition::RemapPyroExtraWeaponSlots( void )
+{
+	if ( !CanBeUsedByClass( TF_CLASS_PYRO ) )
+		return;
+
+	if ( m_iLoadoutSlots[TF_CLASS_PYRO] != LOADOUT_POSITION_SECONDARY
+		&& m_iDefaultLoadoutSlot != LOADOUT_POSITION_SECONDARY )
+		return;
+
+	const char *pszItemClass = GetItemClass();
+	loadout_positions_t iNewSlot = LOADOUT_POSITION_INVALID;
+
+	if ( pszItemClass && ( !V_stricmp( pszItemClass, "tf_weapon_flaregun" ) || !V_stricmp( pszItemClass, "tf_weapon_flaregun_revenge" ) ) )
+	{
+		iNewSlot = LOADOUT_POSITION_PYRO_FLARE;
+	}
+	else if ( pszItemClass && !V_stricmp( pszItemClass, "tf_weapon_rocketpack" ) )
+	{
+		iNewSlot = LOADOUT_POSITION_PYRO_JETPACK;
+	}
+	else if ( pszItemClass && !V_stricmp( pszItemClass, "tf_weapon_jar_gas" ) )
+	{
+		iNewSlot = LOADOUT_POSITION_PYRO_GAS;
+	}
+
+	if ( iNewSlot == LOADOUT_POSITION_INVALID )
+		return;
+
+	if ( m_iLoadoutSlots[TF_CLASS_PYRO] == LOADOUT_POSITION_SECONDARY
+		|| m_iLoadoutSlots[TF_CLASS_PYRO] == LOADOUT_POSITION_INVALID )
+	{
+		m_iLoadoutSlots[TF_CLASS_PYRO] = iNewSlot;
+	}
+
+	bool bPyroOnly = true;
+	for ( int i = 0; i < LOADOUT_COUNT; ++i )
+	{
+		if ( i == TF_CLASS_PYRO )
+			continue;
+		if ( CanBeUsedByClass( i ) )
+		{
+			bPyroOnly = false;
+			break;
+		}
+	}
+
+	if ( bPyroOnly && m_iDefaultLoadoutSlot == LOADOUT_POSITION_SECONDARY )
 	{
 		m_iDefaultLoadoutSlot = iNewSlot;
 	}
@@ -1719,6 +1777,9 @@ const char *g_szLoadoutStringsForDisplay[] =
 	"#LoadoutSlot_ScoutThrowable",	// LOADOUT_POSITION_SCOUT_THROWABLE,
 	"#LoadoutSlot_SoldierBanner",	// LOADOUT_POSITION_SOLDIER_BANNER,
 	"#LoadoutSlot_SoldierPassive",	// LOADOUT_POSITION_SOLDIER_PASSIVE,
+	"#LoadoutSlot_PyroFlare",		// LOADOUT_POSITION_PYRO_FLARE,
+	"#LoadoutSlot_PyroJetpack",		// LOADOUT_POSITION_PYRO_JETPACK,
+	"#LoadoutSlot_PyroGas",			// LOADOUT_POSITION_PYRO_GAS,
 
 };
 COMPILE_TIME_ASSERT( ARRAYSIZE( g_szLoadoutStringsForDisplay ) == CLASS_LOADOUT_POSITION_COUNT );
@@ -1836,7 +1897,7 @@ bool CTFItemSchema::BInitSchema( KeyValues *pKVRawDefinition, CUtlVector<CUtlStr
 	SCHEMA_INIT_SUBSTEP( CEconItemSchema::BInitSchema( pKVRawDefinition, pVecErrors ) );
 
 	// Scout drink (slot 4) and throwable (slot 5) sit past the stock items_game range.
-	EnsureClassItemSlotValid( LOADOUT_POSITION_SOLDIER_PASSIVE );
+	EnsureClassItemSlotValid( LOADOUT_POSITION_PYRO_GAS );
 
 	KeyValues *pKVMvmMaps = pKVRawDefinition->FindKey( "mvm_maps" );
 	SCHEMA_INIT_SUBSTEP( BInitMvmMissions( pKVMvmMaps, pVecErrors ) );

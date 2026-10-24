@@ -52,6 +52,7 @@ public:
 	virtual void	DestroySounds( void );
 
 	virtual int		GetWeaponID( void ) const			{ return TF_WEAPON_FLAREGUN; }
+	virtual int		GetSlot( void ) const OVERRIDE		{ return 3; }	// key 4. Shotgun stays on key 2.
 	virtual void	PrimaryAttack();
 	virtual void	SecondaryAttack();
 

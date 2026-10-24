@@ -19385,6 +19385,9 @@ void CTFPlayer::ModifyOrAppendCriteria( AI_CriteriaSet& criteriaSet )
 			"loadout_slot_scout_throwable",	// LOADOUT_POSITION_SCOUT_THROWABLE
 			"loadout_slot_soldier_banner",	// LOADOUT_POSITION_SOLDIER_BANNER
 			"loadout_slot_soldier_passive",	// LOADOUT_POSITION_SOLDIER_PASSIVE
+			"loadout_slot_pyro_flare",		// LOADOUT_POSITION_PYRO_FLARE
+			"loadout_slot_pyro_jetpack",	// LOADOUT_POSITION_PYRO_JETPACK
+			"loadout_slot_pyro_gas",		// LOADOUT_POSITION_PYRO_GAS
 		};
 		COMPILE_TIME_ASSERT( ARRAYSIZE(kSlotCriteriaName) == CLASS_LOADOUT_POSITION_COUNT );
 		CEconItemView *pItem = NULL;
